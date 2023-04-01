@@ -1,13 +1,14 @@
-package gbw.suss.services;
+package gbw.sls.services;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class StockServiceConfiguration {
+public class UserServiceConfiguration {
 
     @Bean
-    StockService stockService(){
-        return new StockService();
+    UserService userService(){
+        return new UserService();
     }
+
 }

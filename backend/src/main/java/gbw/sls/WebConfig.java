@@ -1,4 +1,4 @@
-package gbw.suss;
+package gbw.sls;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;

@@ -1,6 +1,6 @@
-package gbw.suss.services;
+package gbw.sls.services;
 
-import gbw.suss.models.User;
+import gbw.sls.models.User;
 
 public interface IUserService {
     User getByName(String name);

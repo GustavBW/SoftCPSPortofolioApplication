@@ -1,7 +1,7 @@
-package gbw.suss.services;
+package gbw.sls.services;
 
-import gbw.suss.models.User;
-import gbw.suss.repositories.UserRepository;
+import gbw.sls.repositories.UserRepository;
+import gbw.sls.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;

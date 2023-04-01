@@ -1,10 +1,8 @@
-package gbw.suss.models;
+package gbw.sls.models;
 
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Table;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,11 +11,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @ManyToMany
-    @Column(name="following")
-    private Set<Stock> following;
-
     public String getEmail() {
         return email;
     }
@@ -59,14 +52,6 @@ public class User {
     @Column(name="last_name")
     private String lastname;
 
-    public Set<Stock> getFollowing()
-    {
-        return following;
-    }
-    public void setFollowing(Set<Stock> following)
-    {
-        this.following = following;
-    }
 
     public Long getId() {
         return id;
