@@ -44,6 +44,4 @@ public class ChampionListRequest {
     public void setData(List<ChampionOverview> data) {
         this.data = data;
     }
-
-
 }

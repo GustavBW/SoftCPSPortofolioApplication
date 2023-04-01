@@ -28,6 +28,8 @@ public class ChampionOverview {
     @OneToOne(cascade=CascadeType.ALL,mappedBy="overview")
     private ChampionImageInfo image; //gameplay image info
 
+    private byte[] championThumbnail;
+
     public ChampionImageInfo getImage() {
         return image;
     }
@@ -125,5 +127,11 @@ public class ChampionOverview {
     }
 
 
+    public void setThumbnailImageData(byte[] championThumbnail) {
+        this.championThumbnail = championThumbnail;
+    }
 
+    public byte[] getChampionThumbnail(){
+        return championThumbnail;
+    }
 }

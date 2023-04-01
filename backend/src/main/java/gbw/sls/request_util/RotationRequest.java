@@ -1,27 +1,29 @@
 package gbw.sls.request_util;
 
+import java.util.List;
+
 /**
  * Raw class used for loading data into the db
  */
 public class RotationRequest {
 
-    private int[] freeChampionIds;
-    private int[] freeChampionIdsForNewPlayers;
+    private List<Integer> freeChampionIds;
+    private List<Integer>  freeChampionIdsForNewPlayers;
     private int maxNewPlayerLevel;
 
-    public int[] getFreeChampionIds() {
+    public List<Integer>  getFreeChampionIds() {
         return freeChampionIds;
     }
 
-    public void setFreeChampionIds(int[] freeChampionIds) {
+    public void setFreeChampionIds(List<Integer>  freeChampionIds) {
         this.freeChampionIds = freeChampionIds;
     }
 
-    public int[] getFreeChampionIdsForNewPlayers() {
+    public List<Integer>  getFreeChampionIdsForNewPlayers() {
         return freeChampionIdsForNewPlayers;
     }
 
-    public void setFreeChampionIdsForNewPlayers(int[] freeChampionIdsForNewPlayers) {
+    public void setFreeChampionIdsForNewPlayers(List<Integer>  freeChampionIdsForNewPlayers) {
         this.freeChampionIdsForNewPlayers = freeChampionIdsForNewPlayers;
     }
 

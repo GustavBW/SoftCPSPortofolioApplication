@@ -60,7 +60,9 @@ CREATE TABLE IF NOT EXISTS champion(
     "info" integer references champion_info(key),
     "image" integer references champion_image_info(key),
     "parttype" varchar(100),
-    "stats" integer references champion_stats(key)
+    "stats" integer references champion_stats(key),
+    "imageData" bytea,
+    "thumbnailImageData" bytea
 );
 
 CREATE TABLE IF NOT EXISTS champion_champion_tags(
