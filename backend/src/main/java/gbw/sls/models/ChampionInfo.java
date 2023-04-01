@@ -19,7 +19,7 @@ public class ChampionInfo {
         this.overview = overview;
     }
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy="key")
+    @OneToOne(cascade = CascadeType.ALL,mappedBy="info")
     private ChampionOverview overview;
 
     public int getAttack() {

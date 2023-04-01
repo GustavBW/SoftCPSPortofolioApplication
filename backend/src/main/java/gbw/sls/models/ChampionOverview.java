@@ -15,7 +15,7 @@ public class ChampionOverview {
 
     private String name, title, blurb; //name: champion name. title: some short flavourful descriptor. blurp: lore excerpt.
 
-    @OneToOne(cascade=CascadeType.ALL,mappedBy="key")
+    @OneToOne(cascade=CascadeType.ALL,mappedBy="overview")
     private ChampionInfo info; //playstyle info
     private byte[] imageData; //raw image data
 
@@ -23,9 +23,9 @@ public class ChampionOverview {
     private Set<ChampionTag> tags; //fighter/assasin/mage/tank...
     private String parttype; //mana/fury/energy...
 
-    @OneToOne(cascade=CascadeType.ALL,mappedBy="key")
+    @OneToOne(cascade=CascadeType.ALL,mappedBy="overview")
     private ChampionStatblock stats; //gameplay resource scores
-    @OneToOne(cascade=CascadeType.ALL,mappedBy="key")
+    @OneToOne(cascade=CascadeType.ALL,mappedBy="overview")
     private ChampionImageInfo image; //gameplay image info
 
     public ChampionImageInfo getImage() {

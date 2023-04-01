@@ -38,7 +38,7 @@ public class ChampionStatblock {
         this.overview = overview;
     }
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy="key")
+    @OneToOne(cascade = CascadeType.ALL,mappedBy="stats")
     private ChampionOverview overview;
 
     public float getHp() {

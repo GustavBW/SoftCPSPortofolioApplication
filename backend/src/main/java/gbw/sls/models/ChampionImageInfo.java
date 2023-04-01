@@ -18,7 +18,7 @@ public class ChampionImageInfo {
         this.overview = overview;
     }
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy="key")
+    @OneToOne(cascade = CascadeType.ALL,mappedBy="image")
     private ChampionOverview overview;
 
     private String full,sprite,group;
