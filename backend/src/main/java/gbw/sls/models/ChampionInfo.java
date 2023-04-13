@@ -10,6 +10,10 @@ public class ChampionInfo {
     @Column(nullable = false)
     private Long key;
     private int attack, defense, magic, difficulty;
+    @OneToOne
+    private ChampionOverview overview;
+
+    public ChampionInfo(){}
 
     public ChampionOverview getOverview() {
         return overview;
@@ -19,8 +23,7 @@ public class ChampionInfo {
         this.overview = overview;
     }
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy="info")
-    private ChampionOverview overview;
+
 
     public int getAttack() {
         return attack;

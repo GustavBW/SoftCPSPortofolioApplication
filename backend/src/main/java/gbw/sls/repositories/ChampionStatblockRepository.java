@@ -1,9 +1,9 @@
 package gbw.sls.repositories;
 
-import gbw.sls.models.ChampionOverview;
+import gbw.sls.models.ChampionStatblock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ChampionRepository extends JpaRepository<ChampionOverview, Long> {
+public interface ChampionStatblockRepository extends JpaRepository<ChampionStatblock,Long> {
 }

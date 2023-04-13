@@ -10,11 +10,23 @@ public class ChampionImageInfo {
     @Column(nullable = false)
     private Long key;
 
-    @OneToOne(mappedBy="image")
-    public ChampionOverview overview;
+    //@OneToOne(optional = true)
+    //public ChampionOverview overview;
 
-    public String full,sprite,group;
-    public int x,y,w,h;
+    @Column(name = "`full`", columnDefinition="TEXT", nullable = true)
+    public String full;
+    @Column(name = "`sprite`", columnDefinition="TEXT", nullable = true)
+    public String sprite;
+    @Column(name = "`group`", columnDefinition="TEXT", nullable = true)
+    public String group;
+    @Column(name = "`x`", columnDefinition = "INT", nullable = true)
+    public int x;
+    @Column(name = "`y`", columnDefinition = "INT", nullable = true)
+    public int y;
+    @Column(name = "`w`", columnDefinition = "INT", nullable = true)
+    public int w;
+    @Column(name = "`h`", columnDefinition = "INT", nullable = true)
+    public int h;
 
     public ChampionImageInfo(){}
 
@@ -82,12 +94,12 @@ public class ChampionImageInfo {
         this.h = h;
     }
 
-    public ChampionOverview getOverview() {
-        return overview;
-    }
+    //public ChampionOverview getOverview() {
+    //    return overview;
+    //}
 
-    public void setOverview(ChampionOverview overview) {
-        this.overview = overview;
-    }
+    //public void setOverview(ChampionOverview overview) {
+    //    this.overview = overview;
+    //}
 
 }

@@ -30,6 +30,11 @@ public class ChampionStatblock {
     private float attackspeedperlevel;
     private float attackspeed;
 
+    @OneToOne
+    private ChampionOverview overview;
+
+    public ChampionStatblock(){}
+
     public ChampionOverview getOverview() {
         return overview;
     }
@@ -38,8 +43,7 @@ public class ChampionStatblock {
         this.overview = overview;
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private ChampionOverview overview;
+
 
     public float getHp() {
         return hp;

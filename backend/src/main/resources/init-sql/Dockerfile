@@ -1,4 +1,4 @@
-FROM mysql:8.0.18
+FROM mysql:8.0.32
 
 ENV MYSQL_ROOT_PASSWORD=secret
 

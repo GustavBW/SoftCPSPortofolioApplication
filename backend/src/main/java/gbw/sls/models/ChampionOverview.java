@@ -5,21 +5,19 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name="champion_overview")
 public class ChampionOverview {
     @Id
     @Column(nullable = false)
     public Long key;
 
     @OneToOne(optional = true)
-    @JoinColumn(name = "champion_image_info_key", referencedColumnName = "key")
     public ChampionImageInfo image; //gameplay image info
 
     public String version, id; //version: latest patch update. id: same as name
 
     public String name, title, blurb; //name: champion name. title: some short flavourful descriptor. blurp: lore excerpt.
 
-    @OneToOne
+    @OneToOne(optional = true)
     public ChampionInfo info; //playstyle info
     public String imageURL; //raw image data
 
@@ -27,11 +25,12 @@ public class ChampionOverview {
     public Set<ChampionTag> tags; //fighter/assasin/mage/tank...
     public String partype; //mana/fury/energy...
 
-    @OneToOne
+    @OneToOne(optional = true)
     public ChampionStatblock stats; //gameplay resource scores
 
-
     public String thumbnailUrl;
+
+    public ChampionOverview(){}
 
     public ChampionImageInfo getImage() {
         return image;

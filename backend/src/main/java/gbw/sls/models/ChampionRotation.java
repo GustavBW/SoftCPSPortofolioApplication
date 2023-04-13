@@ -15,6 +15,8 @@ public class ChampionRotation {
     @ManyToMany
     private List<ChampionOverview> champions;
 
+    public ChampionRotation(){}
+
     public List<ChampionOverview> getChampions() {
         return champions;
     }
@@ -23,17 +25,6 @@ public class ChampionRotation {
         this.champions = champions;
     }
 
-    public ChampionOverview getOverview() {
-        return overview;
-    }
-
-    public void setOverview(ChampionOverview overview) {
-        this.overview = overview;
-    }
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private ChampionOverview overview;
-
     public Long getId() {
         return id;
     }
@@ -41,4 +32,5 @@ public class ChampionRotation {
     public void setId(Long id) {
         this.id = id;
     }
+
 }

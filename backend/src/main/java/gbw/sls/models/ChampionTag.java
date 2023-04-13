@@ -9,11 +9,18 @@ import org.hibernate.annotations.Table;
 import java.util.Set;
 
 @Entity
-public class ChampionTag {
+public class ChampionTag implements Comparable<ChampionTag> {
 
     @Id
     @Column(nullable = false)
     public String value;
+
+    public ChampionTag() {
+
+    }
+
+    @ManyToMany
+    public Set<ChampionOverview> champions;
 
     public Set<ChampionOverview> getChampions() {
         return champions;
@@ -23,8 +30,6 @@ public class ChampionTag {
         this.champions = champions;
     }
 
-    @ManyToMany
-    public Set<ChampionOverview> champions;
 
     public ChampionTag(String value){
         this.value = value;
@@ -36,5 +41,12 @@ public class ChampionTag {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public int compareTo(ChampionTag o) {
+        if(o.getValue().equals(this.value))
+            return 1;
+        return 0;
     }
 }

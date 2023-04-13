@@ -1,40 +1,55 @@
 package gbw.sls.cache_loader;
 
+import gbw.sls.models.ChampionImageInfo;
 import gbw.sls.models.ChampionOverview;
 import gbw.sls.models.ChampionRotation;
-import gbw.sls.repositories.ChampionRepository;
-import gbw.sls.repositories.ChampionRotationRepository;
+import gbw.sls.models.ChampionTag;
+import gbw.sls.repositories.*;
+import gbw.sls.request_util.RotationRequest;
 import gbw.sls.services.ISecretService;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
 
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Service
 public class CacheLoader implements Runnable{
 
     private final ISecretService secrets;
     private final Thread thread;
-    private final ChampionRepository champRepo;
+    private final ChampionOverviewRepository champRepo;
     private final ChampionRotationRepository rotationRepo;
+    private final ChampionTagRepository tagRepo;
+    private final ChampionImageInfoRepository imageInfoRepo;
+    private final ChampionStatblockRepository statsRepo;
     private final AtomicBoolean shouldRun = new AtomicBoolean(true);
 
     private static final String AUTH_HEADER_NAME = "Authorization";
 
 
-    public CacheLoader(ChampionRepository champRepo, ISecretService secrets, ChampionRotationRepository rotationRepo){
+    public CacheLoader(ChampionOverviewRepository champRepo,
+                       ISecretService secrets,
+                       ChampionRotationRepository rotationRepo,
+                       ChampionTagRepository tagRepo,
+                       ChampionImageInfoRepository imageInfoRepo,
+                       ChampionStatblockRepository statsRepo
+                       ){
         this.champRepo = champRepo;
         this.secrets = secrets;
         this.rotationRepo = rotationRepo;
+        this.tagRepo = tagRepo;
+        this.imageInfoRepo = imageInfoRepo;
+        this.statsRepo = statsRepo;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shouldRun.set(false)));
         thread = new Thread(this);
@@ -48,8 +63,8 @@ public class CacheLoader implements Runnable{
         while(shouldRun.get()){
 
             try {
-                updateCurrentRotation();
                 loadAllChampions();
+                updateCurrentRotation();
             } catch (JsonProcessingException e) {
                 System.err.println(e.getMessage());
             }
@@ -64,15 +79,23 @@ public class CacheLoader implements Runnable{
         System.out.println("CacheLoader stopped");
     }
 
+    /**
+     * Loads the current champion rotation into the database.
+     * @throws JsonProcessingException
+     */
     private void updateCurrentRotation() throws JsonProcessingException {
         String response = accumulateHttpRequest(CHAMP_ROTATION_URL,true);
         if(response != null) {
-            ChampionRotation rotation = new ObjectMapper().readValue(response, ChampionRotation.class);
+            RotationRequest request = new ObjectMapper().readValue(response, RotationRequest.class);
+            ChampionRotation rotation = new ChampionRotation();
+            rotation.setChampions(champRepo.findAllById(request.freeChampionIds));
             rotationRepo.save(rotation);
         }
     }
 
-
+    /**
+     * Generates the appropriate image urls based on RIOT api patterns.
+     */
     private void fillImageUrls()
     {
         System.out.println("CacheLoader updating all champions");
@@ -85,9 +108,16 @@ public class CacheLoader implements Runnable{
 
     private String getChampionThumbnailUrl(ChampionOverview overview)
     {
-        return "https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/"+overview.getName()+"_0.jpg";
+        return "http://ddragon.leagueoflegends.com/cdn/img/champion/tiles/"+overview.getName()+"_0.jpg"; //public
+    }
+    private String getImageUrl(ChampionOverview overview){
+        return "http://ddragon.leagueoflegends.com/cdn/img/champion/splash/"+overview.getName()+"_0.jpg"; //public
     }
 
+    /**
+     * Loads the publicly available champion index
+     * @throws JsonProcessingException
+     */
     private void loadAllChampions() throws JsonProcessingException {
         System.out.println("CacheLoader updating all champions");
 
@@ -107,6 +137,25 @@ public class CacheLoader implements Runnable{
                 dataList.add(mapper2.treeToValue(element,ChampionOverview.class));
         }
 
+        Set<ChampionTag> accumulatedTags = new HashSet<>(); //minor optimization as there's a lot of duplicates
+
+        for(ChampionOverview champ : dataList) {
+            accumulatedTags.addAll(champ.getTags());
+        }
+        tagRepo.saveAll(accumulatedTags);
+
+        for(ChampionOverview champ : dataList) {
+            ChampionImageInfo imageInfo = champ.getImage();
+            if (imageInfo != null) {
+                //imageInfo.setOverview(champ);
+                imageInfo.setKey(champ.getKey());
+                imageInfoRepo.save(imageInfo);
+            }
+
+            champ.getStats().setKey(champ.getKey());
+            champ.getStats().setOverview(champ);
+            statsRepo.save(champ.getStats());
+        }
         champRepo.saveAll(dataList);
     }
 
@@ -142,9 +191,6 @@ public class CacheLoader implements Runnable{
         return response;
     }
 
-    private String getImageUrl(ChampionOverview overview){
-        return "http://ddragon.leagueoflegends.com/cdn/img/champion/splash/"+overview.getName()+"_0.jpg";
-    }
 
     //load free rotation every 5 min
     //when loading champion.json load ChampionOverview.{name}_0.jpg as well for splash art
