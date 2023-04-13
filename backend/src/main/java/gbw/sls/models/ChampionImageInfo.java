@@ -2,23 +2,15 @@ package gbw.sls.models;
 
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Table;
 
 @Entity
+@Table(name="champion_image_info")
 public class ChampionImageInfo {
     @Id
     @Column(nullable = false)
     private Long key;
 
-    public ChampionOverview getOverview() {
-        return overview;
-    }
-
-    public void setOverview(ChampionOverview overview) {
-        this.overview = overview;
-    }
-
-    @OneToOne
+    @OneToOne(mappedBy="image")
     public ChampionOverview overview;
 
     public String full,sprite,group;
@@ -90,5 +82,12 @@ public class ChampionImageInfo {
         this.h = h;
     }
 
+    public ChampionOverview getOverview() {
+        return overview;
+    }
+
+    public void setOverview(ChampionOverview overview) {
+        this.overview = overview;
+    }
 
 }
