@@ -6,7 +6,7 @@ import org.hibernate.annotations.Table;
 @Entity
 public class ChampionStatblock {
     @Id
-    @Column(name = "key", nullable = false)
+    @Column(nullable = false)
     private Long key;
 
     private float hp;
@@ -38,7 +38,7 @@ public class ChampionStatblock {
         this.overview = overview;
     }
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy="stats")
+    @OneToOne(cascade = CascadeType.ALL)
     private ChampionOverview overview;
 
     public float getHp() {

@@ -18,7 +18,20 @@ public class SecretService implements ISecretService{
 
         try{
             BufferedReader br = new BufferedReader(new FileReader("secrets.txt"));
-            cachedToken = br.readLine();
+            String currentLine = "";
+            while((currentLine = br.readLine()) != null){
+                if(currentLine.contains("X-Riot-Token")){
+                    String[] split = currentLine.split("=");
+                    if(split.length < 2) {
+                        throw new RuntimeException("Error while reading secret: \"Riot-X-Token\" - please provide valid value.");
+                    }else{
+                        this.cachedToken = split[1];
+                        break;
+                    }
+
+                }
+
+            }
         } catch (IOException ignored) {
             System.err.println("Unable to locate and/or read secrets.txt at project root");
         }

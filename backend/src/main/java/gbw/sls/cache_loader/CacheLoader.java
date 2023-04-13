@@ -1,5 +1,6 @@
 package gbw.sls.cache_loader;
 
+<<<<<<< Updated upstream
 import gbw.sls.models.ChampionOverview;
 import gbw.sls.models.ChampionRotation;
 import gbw.sls.repositories.ChampionRepository;
@@ -12,6 +13,24 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+=======
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import gbw.sls.models.ChampionOverview;
+import gbw.sls.repositories.IChampionRepository;
+import gbw.sls.request_util.ChampionListRequest;
+import gbw.sls.services.ISecretService;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+>>>>>>> Stashed changes
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -44,12 +63,24 @@ public class CacheLoader implements Runnable{
         System.out.println("CacheLoader started");
         while(shouldRun.get()){
 
+<<<<<<< Updated upstream
 
             RotationRequest currentRotation = updateCurrenRotation();
             updateAllChampions(currentRotation);
+=======
+            updateCurrentRotation();
+            try {
+                updateAllChampions();
+            } catch (JsonProcessingException e) {
+                System.out.println(e.getMessage());
+            }
+            loadChampionSplashArts();
+>>>>>>> Stashed changes
 
             try {
-                wait(60 * 1000 * 60); //sleep 60 minutes
+                synchronized (this) {
+                    wait(60 * 1000 * 60); //sleep 60 minutes
+                }
             } catch (InterruptedException ignored) {}
         }
         System.out.println("CacheLoader stopped");
@@ -65,7 +96,11 @@ public class CacheLoader implements Runnable{
         overview.setThumbnailImageData(getChampionThumbnail(overview.getName()));
     }
 
+<<<<<<< Updated upstream
     private RotationRequest updateCurrenRotation()
+=======
+    private void updateCurrentRotation()
+>>>>>>> Stashed changes
     {
         System.out.println("CacheLoader loading current rotation");
         RotationRequest rotationRequest = new RotationRequest();
@@ -75,6 +110,7 @@ public class CacheLoader implements Runnable{
             conn.setRequestMethod("GET");
             conn.setRequestProperty(AUTH_HEADER_NAME, secrets.getAuthToken());
 
+<<<<<<< Updated upstream
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = conn.getInputStream();
@@ -218,17 +254,84 @@ public class CacheLoader implements Runnable{
     private ChampionListRequest parseChampionListJson(String json) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, ChampionListRequest.class);
+=======
+        String response = accumulateHttpRequest(CHAMP_ROTATION_URL,true);
+
     }
 
+    private void updateAllChampions() throws JsonProcessingException {
+        System.out.println("CacheLoader updating all champions");
+
+        String response = accumulateHttpRequest(ALL_CHAMPS_JSON_URL,false);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        JsonNode root = mapper.readTree(response);
+        JsonNode dataNode = root.path("data");
+
+        List<ChampionOverview> dataList = new ArrayList<>();
+        Iterator<JsonNode> elements = dataNode.elements();
+        ObjectMapper mapper2 = new ObjectMapper();
+        while (elements.hasNext()) {
+            JsonNode element = elements.next();
+            if(element != null)
+                dataList.add(mapper2.treeToValue(element,ChampionOverview.class));
+        }
+
+        champRepo.saveAllAndFlush(dataList);
+>>>>>>> Stashed changes
+    }
+
+    private String accumulateHttpRequest(String url, boolean includeAuth)
+    {
+        String response = "fetch failed";
+        try {
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            // Set the request method
+            con.setRequestMethod("GET");
+
+            // Set the X-Riot-Token header
+            if(includeAuth)
+                con.setRequestProperty("X-Riot-Token", secrets.getAuthToken());
+
+            // Get the response code and read the response
+            int responseCode = con.getResponseCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuilder responseAccumulator = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                responseAccumulator.append(inputLine);
+            }
+            in.close();
+
+            response = responseAccumulator.toString();
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return response;
+    }
+
+    private String getImageUrl(ChampionOverview overview){
+        return "http://ddragon.leagueoflegends.com/cdn/img/champion/splash/"+overview.getName()+"_0.jpg";
+    }
 
     //load free rotation every 5 min
     //when loading champion.json load ChampionOverview.{name}_0.jpg as well for splash art
 
     //Auth header: X-Riot-Token
+<<<<<<< Updated upstream
     //All champs: http://ddragon.leagueoflegends.com/cdn/13.6.1/data/en_US/champion.json
     //Champ image: http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aatrox_0.jpg
     //Champ rotation: https://euw1.api.riotgames.com/lol/platform/v3/champion-rotations
     //Champ thumbnail: https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/Aatrox_0.jpg
+=======
+    private static final String ALL_CHAMPS_JSON_URL = "http://ddragon.leagueoflegends.com/cdn/13.6.1/data/en_US/champion.json"; //public
+    //Champ image: http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aatrox_0.jpg //public
+    private static final String CHAMP_ROTATION_URL = "https://euw1.api.riotgames.com/lol/platform/v3/champion-rotations"; //private
+>>>>>>> Stashed changes
 
 
 }

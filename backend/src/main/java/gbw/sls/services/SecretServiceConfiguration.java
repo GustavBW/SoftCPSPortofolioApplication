@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SecretServiceConfiguration {
     @Bean
-    SecretService userService(){
+    SecretService secretService(){
         return new SecretService();
     }
 }

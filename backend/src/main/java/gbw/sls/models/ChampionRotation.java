@@ -9,7 +9,7 @@ import java.util.List;
 public class ChampionRotation {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private Long id;
 
     @ManyToMany
@@ -31,7 +31,7 @@ public class ChampionRotation {
         this.overview = overview;
     }
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy="key")
+    @OneToOne(cascade = CascadeType.ALL)
     private ChampionOverview overview;
 
     public Long getId() {

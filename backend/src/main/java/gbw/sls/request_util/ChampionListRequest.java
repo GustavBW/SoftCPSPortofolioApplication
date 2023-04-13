@@ -9,9 +9,9 @@ import java.util.List;
  */
 public class ChampionListRequest {
 
-    private String type, format, version;
+    public String type, format, version;
 
-    private List<ChampionOverview> data;
+    public ChampionOverview[] data;
 
     public String getType() {
         return type;
@@ -37,11 +37,11 @@ public class ChampionListRequest {
         this.version = version;
     }
 
-    public List<ChampionOverview> getData() {
+    public ChampionOverview[] getData() {
         return data;
     }
 
-    public void setData(List<ChampionOverview> data) {
+    public void setData(ChampionOverview[] data) {
         this.data = data;
     }
 }

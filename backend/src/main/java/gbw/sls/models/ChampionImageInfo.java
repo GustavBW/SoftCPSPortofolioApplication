@@ -7,7 +7,7 @@ import org.hibernate.annotations.Table;
 @Entity
 public class ChampionImageInfo {
     @Id
-    @Column(name = "key", nullable = false)
+    @Column(nullable = false)
     private Long key;
 
     public ChampionOverview getOverview() {
@@ -18,11 +18,13 @@ public class ChampionImageInfo {
         this.overview = overview;
     }
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy="image")
-    private ChampionOverview overview;
+    @OneToOne
+    public ChampionOverview overview;
 
-    private String full,sprite,group;
-    private int x,y,w,h;
+    public String full,sprite,group;
+    public int x,y,w,h;
+
+    public ChampionImageInfo(){}
 
     public Long getKey() {
         return key;

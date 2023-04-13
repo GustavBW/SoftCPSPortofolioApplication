@@ -7,7 +7,7 @@ import org.hibernate.annotations.Table;
 public class ChampionInfo {
 
     @Id
-    @Column(name = "key", nullable = false)
+    @Column(nullable = false)
     private Long key;
     private int attack, defense, magic, difficulty;
 

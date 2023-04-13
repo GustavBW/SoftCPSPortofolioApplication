@@ -12,8 +12,8 @@ import java.util.Set;
 public class ChampionTag {
 
     @Id
-    @Column(name = "value", nullable = false)
-    private String value;
+    @Column(nullable = false)
+    public String value;
 
     public Set<ChampionOverview> getChampions() {
         return champions;
@@ -24,7 +24,11 @@ public class ChampionTag {
     }
 
     @ManyToMany
-    private Set<ChampionOverview> champions;
+    public Set<ChampionOverview> champions;
+
+    public ChampionTag(String value){
+        this.value = value;
+    }
 
     public String getValue() {
         return value;

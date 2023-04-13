@@ -1,32 +1,31 @@
 package gbw.sls.models;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Table;
 
 import java.util.Set;
 
 @Entity
 public class ChampionOverview {
     @Id
-    @Column(name = "key", nullable = false)
-    private Long key;
+    @Column(nullable = false)
+    public Long key;
 
-    private String version, id; //version: latest patch update. id: same as name
+    public String version, id; //version: latest patch update. id: same as name
 
-    private String name, title, blurb; //name: champion name. title: some short flavourful descriptor. blurp: lore excerpt.
+    public String name, title, blurb; //name: champion name. title: some short flavourful descriptor. blurp: lore excerpt.
 
-    @OneToOne(cascade=CascadeType.ALL,mappedBy="overview")
-    private ChampionInfo info; //playstyle info
-    private byte[] imageData; //raw image data
+    @OneToOne(cascade=CascadeType.ALL)
+    public ChampionInfo info; //playstyle info
+    public String imageURL; //raw image data
 
     @ManyToMany
-    private Set<ChampionTag> tags; //fighter/assasin/mage/tank...
-    private String parttype; //mana/fury/energy...
+    public Set<ChampionTag> tags; //fighter/assasin/mage/tank...
+    public String partype; //mana/fury/energy...
 
-    @OneToOne(cascade=CascadeType.ALL,mappedBy="overview")
-    private ChampionStatblock stats; //gameplay resource scores
-    @OneToOne(cascade=CascadeType.ALL,mappedBy="overview")
-    private ChampionImageInfo image; //gameplay image info
+    @OneToOne
+    public ChampionStatblock stats; //gameplay resource scores
+    @OneToOne
+    public ChampionImageInfo image; //gameplay image info
 
     private byte[] championThumbnail;
 
@@ -94,12 +93,12 @@ public class ChampionOverview {
         this.info = info;
     }
 
-    public byte[] getImageData() {
-        return imageData;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public void setImageData(byte[] image) {
-        this.imageData = image;
+    public void setImageURL(String image) {
+        this.imageURL = image;
     }
 
     public Set<ChampionTag> getTags() {
@@ -110,12 +109,12 @@ public class ChampionOverview {
         this.tags = tags;
     }
 
-    public String getParttype() {
-        return parttype;
+    public String getPartype() {
+        return partype;
     }
 
-    public void setParttype(String parttype) {
-        this.parttype = parttype;
+    public void setPartype(String partype) {
+        this.partype = partype;
     }
 
     public ChampionStatblock getStats() {
