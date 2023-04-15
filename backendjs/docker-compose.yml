@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 3v3nM0r3S3cr3tP4ssw0rd
+      MYSQL_DATABASE: sls
+      MYSQL_USER: sls-service
+      MYSQL_PASSWORD: Sup3rS3cr3tP4ssw0rd
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+    container_name: gbw_porto_project_db
