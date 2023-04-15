@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   db:
-    image: mysql:latest
+    image: mysql:5.7
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 3v3nM0r3S3cr3tP4ssw0rd

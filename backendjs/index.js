@@ -1,7 +1,10 @@
 const express = require('express');
 const env = require('./env.json');
 const app = express();
-const db = require('./js/db');
+const client = require('./js/db');
+const startCacheLoader = require('./js/cacheLoader/cacheLoader');
+
+startCacheLoader();
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
