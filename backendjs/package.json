@@ -2,7 +2,8 @@
   "name": "backendjs",
   "version": "1.0.0",
   "description": "backend for soft-cps-porto-proj",
-  "main": "index.js",
+  "main": "index.mjs",
+  "type": "module",
   "scripts": {
     "test": "none"
   },
@@ -18,8 +19,9 @@
   "author": "Gustav B. Wanscher",
   "license": "UNLICENSED",
   "dependencies": {
-    "@mysql/xdevapi": "^8.0.32",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "node-fetch": "^3.3.1"
   }
 }

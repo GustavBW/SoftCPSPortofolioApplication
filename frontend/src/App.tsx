@@ -1,33 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useLayoutEffect, useState } from 'react'
 import './App.css'
+import ChampThumbnail from './components/champion/ChampThumbnail'
+import { getChampion } from './ts/api'
+import ChampField from './components/field/ChampField'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [center, setCenter] = useState({ x: 0, y: 0 }); // in pixels
+  const [mouse, setMouse] = useState({ x: 0, y: 0 }); // in pixels
+  const [fieldRadius, setFieldRadius] = useState(0); // in pixels
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      const { innerWidth, innerHeight } = window;
+      setCenter({ x: innerWidth / 2, y: innerHeight / 2 });
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className="App" onMouseMove={e => setMouse({x: e.clientX, y: e.clientY})}>
+      <ChampField center={center} mouse={mouse} setRadius={setFieldRadius}/>
+      <img className="background" loading="lazy" src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/lcu-article-backdrop.jpg" alt="background" />
     </div>
   )
 }

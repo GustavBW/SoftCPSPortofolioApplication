@@ -5,7 +5,13 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --bg-color-1: #010a13;
+
+  --border-gradient-1: #74541e;
+  --border-gradient-2: #654d25;
+  --border-gradient-3: #9f7229;
+
+  background-color: var(--bg-color-1);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
