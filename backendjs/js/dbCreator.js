@@ -10,6 +10,15 @@ const createChampionsTableQuery = `CREATE TABLE IF NOT EXISTS champions (
     defense INT(11) NOT NULL,
     magic INT(11) NOT NULL,
     difficulty INT(11) NOT NULL,
+    
+    tags VARCHAR(255) NOT NULL,
+    partype VARCHAR(255),
+    
+    PRIMARY KEY (id)
+  )`;
+
+const createChampionImageDataQuery = `CREATE TABLE IF NOT EXISTS champion_images (
+    id INT(11) NOT NULL AUTO_INCREMENT,
     image_full VARCHAR(255),
     image_sprite VARCHAR(255),
     image_group VARCHAR(255),
@@ -17,8 +26,20 @@ const createChampionsTableQuery = `CREATE TABLE IF NOT EXISTS champions (
     image_y INT(11),
     image_w INT(11),
     image_h INT(11),
-    tags VARCHAR(255) NOT NULL,
-    partype VARCHAR(255),
+    champion_key VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+    )`;
+
+const createRotationsTableQuery = `CREATE TABLE IF NOT EXISTS rotations (
+    id INT NOT NULL AUTO_INCREMENT,
+    freeChampionIds VARCHAR(500) NOT NULL,
+    freeChampionIdsForNewPlayers VARCHAR(500) NOT NULL,
+    maxNewPlayerLevel INT NOT NULL,
+    PRIMARY KEY (id)
+)`;
+
+const createChampionStatsTableQuery = `CREATE TABLE IF NOT EXISTS champion_stats (
+    id INT(11) NOT NULL AUTO_INCREMENT,
     hp INT(11) NOT NULL,
     hpperlevel INT(11) NOT NULL,
     mp INT(11) NOT NULL,
@@ -39,28 +60,28 @@ const createChampionsTableQuery = `CREATE TABLE IF NOT EXISTS champions (
     attackdamageperlevel FLOAT NOT NULL,
     attackspeedperlevel FLOAT NOT NULL,
     attackspeed FLOAT NOT NULL,
-    PRIMARY KEY (id)
-  )`;
-
-const createRotationsTableQuery = `CREATE TABLE IF NOT EXISTS rotations (
-    id INT NOT NULL AUTO_INCREMENT,
-    freeChampionIds VARCHAR(500) NOT NULL,
-    freeChampionIdsForNewPlayers VARCHAR(500) NOT NULL,
-    maxNewPlayerLevel INT NOT NULL,
+    champion_key VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 )`;
 
-const insertChampionQuery = `INSERT INTO champions (name, version, id, key, title, blurb, info, image, tags, partype, stats)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+const insertChampionQuery = `INSERT INTO champions (name, version, id, key, title, blurb, info, tags, partype, stats)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 const insertRotationQuery = `INSERT INTO rotations (freeChampionIds, freeChampionIdsForNewPlayers, maxNewPlayerLevel)
-                VALUES (?, ?, ?)`;
-
+            VALUES (?, ?, ?)`;
+const insertChampionImageDataQuery = `INSERT INTO champion_images (image_full, image_sprite, image_group, image_x, image_y, image_w, image_h, champion_key)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+const insertChampionStatsQuery = `INSERT INTO champion_stats (hp, hpperlevel, mp, mpperlevel, movespeed, armor, armorperlevel, spellblock, spellblockperlevel, attackrange, hpregen, hpregenperlevel, mpregen, mpregenperlevel, crit, critperlevel, attackdamage, attackdamageperlevel, attackspeedperlevel, attackspeed, champion_key)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 const insertChampion = async (connection, json) => {
     try {
-        const values = [json.name, json.version, json.id, json.key, json.title, json.blurb, JSON.stringify(json.info), JSON.stringify(json.image), JSON.stringify(json.tags), json.partype, JSON.stringify(json.stats)];
+        const values = [json.name, json.version, json.id, json.key, json.title, json.blurb, JSON.stringify(json.info), JSON.stringify(json.tags), json.partype];
         await connection.query(insertChampionQuery, values);
-        console.log('Champion added to the table.');
+        const values2 = [...JSON.stringify(json.image), json.key];
+        await connection.query(insertChampionImageDataQuery, values2); 
+        const values3 = [...JSON.stringify(json.stats), json.key];
+        await connection.query(insertChampionStatsQuery, values3);
+        console.log('Champion added.');
     } catch (err) {
         console.log('Error inserting champion');
         console.log(err);
