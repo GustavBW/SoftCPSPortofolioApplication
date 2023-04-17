@@ -35,6 +35,7 @@ const doLoadCycle = async () => {
     await Promise.all([rotationPromise, championsPromise])
     .then(() => {
         console.log(`Cache loader total fetch time: ${new Date().getTime() - timeA}ms`);
+        console.log(`Next update in: ${appConfig.recacheRateMinutes} minutes`);
     });
 };
 

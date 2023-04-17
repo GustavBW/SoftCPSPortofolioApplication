@@ -17,70 +17,83 @@ export interface FieldIndex {
     index: number;
 }
 
-export default class FieldIterator {
-    private width: number;
-    private height: number;
-    private index: number = 0;
-    private layer: number = 0;
-    private latest: {x: number, y: number} = {x: 0, y: 0};
-    private pointer: number = 0;
+export interface FieldIteratorState {
+    /**
+     * Index of previous hexagon
+     */
+    index: number;
+    /**
+     * Hexagon layer where center = 0
+     */
+    layer: number;
+    /**
+     * Latest hexagon position
+     */
+    latest?: {x: number, y: number};
+    /**
+     * Hexagon width
+     */
+    width: number;
+    /**
+     * Hexagon height
+     */
+    height: number;
+    /**
+     * Pointer to current side of hexagon
+     */
+    pointer: number;
+}
 
-    constructor(width: number, height: number, startLayer?: number) {
-        this.width = width;
-        this.height = height;
-        if(startLayer){
-            for(let i = 0; i < startLayer * 6; i++){
-                this.next();
-            }
-        }
-        this.layer = startLayer || 0;
+
+const getCurrent = (state: FieldIteratorState): FieldIndex => {
+    state.index++;
+    return { x: state.latest!.x, y: state.latest!.y, layer: state.layer, index: state.index};
+}
+
+const iterateField = (state: FieldIteratorState): FieldIndex => {
+    if(state.latest == null) {
+        state.latest = {x: 0, y: 0};
+        return { x: state.latest.x, y: state.latest.y, layer: state.layer, index: state.index };
     }
 
-    private getCurrent(isCenter: boolean): FieldIndex {
-        if(!isCenter) this.index++;
-        return {x: this.latest.x, y: this.latest.y, layer: this.layer, index: this.index};
+    if (state.index % state.layer == 0){
+        state.pointer++;
+    }
+    if (state.pointer > 5 || state.layer == 0){
+        state.latest.x += state.width;
+        state.layer++;
+        state.pointer = 0;
     }
 
-    next(): FieldIndex {
+    // Apply a shift in accordence with what side of the hexagon we are on
+    shiftLatest(state);
+    return getCurrent(state);
+}
+export default iterateField;
 
-        if(this.index % this.layer == 0){
-            this.pointer++;
-        }
-        if (this.pointer > 5 || this.layer == 0){
-            this.latest.x += this.width;
-            this.layer++;
-            this.pointer = 0;
-        }
-
-        // Apply a shift in accordence with what side of the hexagon we are on
-        this.shiftLatest(this.pointer);
-        return this.getCurrent(false);
-    }
-
-    private shiftLatest = (pointer: number) => {
-        switch (pointer) {
-            case 0: // Move up-left
-                this.latest.x -= this.width / 2;
-                this.latest.y -= this.height * 0.75;
-                break;
-            case 1: // Move left <-
-                this.latest.x -= this.width;
-                break;
-            case 2: // Move down-left
-                this.latest.x -= this.width / 2;
-                this.latest.y += this.height * 0.75;
-                break;
-            case 3: // Move down-right
-                this.latest.x += this.width / 2;
-                this.latest.y += this.height * 0.75;
-                break;
-            case 4: // Move right
-                this.latest.x += this.width;
-                break;
-            case 5: // Move up-right
-                this.latest.x += this.width / 2;
-                this.latest.y -= this.height * 0.75;
-                break;
-        }        
-    }
+const shiftLatest = (state: FieldIteratorState) => {
+    switch (state.pointer) {
+        case 0: // Move up-left
+            state.latest!.x -= state.width / 2;
+            state.latest!.y -= state.height * 0.75;
+            break;
+        case 1: // Move left <-
+            state.latest!.x -= state.width;
+            break;
+        case 2: // Move down-left
+            state.latest!.x -= state.width / 2;
+            state.latest!.y += state.height * 0.75;
+            break;
+        case 3: // Move down-right
+            state.latest!.x += state.width / 2;
+            state.latest!.y += state.height * 0.75;
+            break;
+        case 4: // Move right
+            state.latest!.x += state.width;
+            break;
+        case 5: // Move up-right
+            state.latest!.x += state.width / 2;
+            state.latest!.y -= state.height * 0.75;
+            break;
+    }        
 }

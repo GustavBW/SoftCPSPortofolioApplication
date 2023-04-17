@@ -3,7 +3,7 @@ import { Champion } from '../../ts/types';
 import { getAllChampions } from '../../ts/api';
 import ChampThumbnail from '../champion/ChampThumbnail';
 import './ChampField.css';
-import FieldIterator, { FieldIndex } from '../../ts/fieldGenerationIterator';
+import iterateField, { FieldIndex, FieldIteratorState } from '../../ts/fieldGenerationIterator';
 
 interface ChampFieldProps {
     /**
@@ -26,7 +26,7 @@ interface ChampFieldProps {
 }
 
 const sqrt3 = Math.sqrt(3);
-const tileWidthPercent = .1; //percentage of the screen width
+const tileWidthPercent = .075; //percentage of the screen width
 
 export default function ChampField({ center, mouse, setRadius, algorithm }: ChampFieldProps) {
     const [champions, setChampions] = React.useState<Champion[]>([]);
@@ -38,10 +38,12 @@ export default function ChampField({ center, mouse, setRadius, algorithm }: Cham
             champs = algorithm(champs);
         }
         const width = 2 * center.x * tileWidthPercent * 1.1;
-        const iterator = new FieldIterator(width * 1.1, width * (14.2 / 8.2) * 1.1, 0);
+        const state: FieldIteratorState = {
+            layer: 0, index: 0, width: width * 1.1, height: width * (14.2 / 8.2) * 1.1, pointer: 0, 
+        };
         const indexes: FieldIndex[] = [];
         for (let i = 0; i < champs.length; i++) {
-            indexes.push(iterator.next());
+            indexes.push(iterateField(state));
         }
         indexes.push({ x: 0, y: 0, layer: 0, index: 0});
         setFieldIndicies(indexes);

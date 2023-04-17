@@ -1,24 +1,87 @@
+@font-face{
+  font-family: 'Beaufort';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./assets/fonts/BeaufortforLOL-Medium.ttf") format('ttf');
+}
+
+@font-face{
+  font-family: 'Beaufort';
+  font-style: bold;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./assets/fonts/BeaufortforLOL-Heavy.ttf") format('ttf');
+}
+
+@font-face{
+  font-family: 'Spiegel';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./assets/fonts/Spiegel_TT_Regular.ttf") format('ttf');
+}
+
+@font-face{
+  font-family: 'Spiegel';
+  font-style: bold;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./assets/fonts/Spiegel_TT_Bold.ttf") format('ttf');
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Spiegel', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  --bg-color-1: #010a13;
+  color-scheme: light dark; 
 
-  --border-gradient-1: #74541e;
-  --border-gradient-2: #654d25;
-  --border-gradient-3: #9f7229;
-  --text-color: #bb8c40;
+  /* https: //brand.riotgames.com/en-us/league-of-legends/color */
+  --blue-1: #CDFAFA;
+  --blue-2: #0AC8B9;
+  --blue-3: #0397AB;
+  --blue-4: #005A82;
+  --blue-5: #0A323C;
+  --blue-6: #091428;
+  --blue-7: #0A1428;
+
+  --gold-1: #F0E6D2;
+  --gold-2: #C8AA6E;
+  --gold-3: #C89B3C;
+  --gold-4: #785A28;
+  --gold-5: #463714;
+  --gold-6: #32281E;
+
+  --grey-1: #A09B8C;
+  --grey-2: #5B5A56;
+  --grey-3: #3C3C41;
+  --grey-4: #2A2A2E;
+  --grey-5: #1E2328;
+  --grey-6: #010A13;
+  
+  --bg-color-1: var(--blue-6);
+
+  --border-gradient-1: var(--gold-5);
+  --border-gradient-2: var(--gold-4);
+  --border-gradient-3: var(--gold-5);
+  --metal-gradient: linear-gradient(var(--gold-5), var(--gold-4));
+  --radiant-gradient: linear-gradient(var(--blue-4), var(--blue-2));
 
   background-color: var(--bg-color-1);
+  color: var(--gold-1);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  overflow: clip;
+  cursor: none;
+}
+
+.relative{
+  position: relative;
 }
 
 .hidden{
@@ -43,6 +106,9 @@ body {
 }
 
 h1 {
+  font-family: 'Beaufort', sans-serif;
+  color: var(--gold-2);
+  font-weight: medium;
   font-size: 3.2em;
   line-height: 1.1;
 }

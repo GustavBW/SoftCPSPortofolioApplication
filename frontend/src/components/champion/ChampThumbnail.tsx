@@ -26,6 +26,7 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
         left: (fieldIndex.x + center.x) + "px"
     });
     const [hover, setHover] = React.useState(false);
+    const zIndex = ((champion.id / 1000) -2) + "";
 
     const updatePositioning = () => {
         setStyle({
@@ -41,7 +42,8 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
     },[center, fieldIndex, width, mouse]);
 
     return (
-        <button className="ChampThumbnail" style={style} onClick={e => console.log("You clicked; " + champion.name)} 
+        <button className="ChampThumbnail" 
+            style={{ ...style, zIndex: zIndex + ""}} onClick={e => console.log("You clicked; " + champion.name)} 
             onMouseOver={e => setHover(true)}
             onMouseLeave={e => setHover(false)}
             aria-label={champion.name}
@@ -64,10 +66,9 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
                     </linearGradient>
                 </defs>
                 <pattern id={"image-" + champion.champion_key} x="0" y="0" width="1" height="1" preserveAspectRatio="xMidYMid slice">
-                    <image className={`clipped-image ${ hover ? "" : ""}`  } xlinkHref={champion.thumbnailUrl}/>
+                    <image className={`clipped-image ${hover ? "" : ""}`} style={{ zIndex: "-10" }} xlinkHref={champion.thumbnailUrl}/>
                 </pattern>
-                <path d={path} fill={"url(#image-" + champion.champion_key+")"} clipPath="url(#hexagon)" 
-                />
+                <path d={path} fill={"url(#image-" + champion.champion_key+")"} clipPath="url(#hexagon)" />
                 <path d={path} stroke={"url(#border-gradient-" + champion.champion_key+")"} strokeWidth="0.1" fill="none" />
                 <path d={path} fill={"url(#gradient-" + champion.champion_key+")"} className={hover ? "" : "hidden"} />
             </svg>
