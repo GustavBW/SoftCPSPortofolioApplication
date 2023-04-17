@@ -22,13 +22,13 @@ export async function getAllChampions(keys?: string[]): Promise<Champion[]> {
 export async function getChampion(id: string): Promise<Champion> {
     const response = await fetch(`${serverUrl}${apiRoot}/champions/${id}`, { headers: headers });
     const data = await response.json();
-    return data;
+    return data[0];
 }
 
 export async function getChampionStats(id: string): Promise<any> {
     const response = await fetch(`${serverUrl}${apiRoot}/champions/${id}/stats`, { headers: headers });
     const data = await response.json();
-    return data;
+    return data[0];
 }
 
 export async function getNewestRotation(): Promise<any> {

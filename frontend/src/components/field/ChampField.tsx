@@ -3,6 +3,7 @@ import { Champion } from '../../ts/types';
 import { getAllChampions } from '../../ts/api';
 import ChampThumbnail from '../champion/ChampThumbnail';
 import './ChampField.css';
+import FieldIterator, { FieldIndex } from '../../ts/fieldGenerationIterator';
 
 interface ChampFieldProps {
     /**
@@ -24,37 +25,28 @@ const tileWidth = 200; //px
 
 export default function ChampField({ center, mouse, setRadius }: ChampFieldProps) {
     const [champions, setChampions] = React.useState<Champion[]>([]);
-    const [xOffsets, setXOffsets] = React.useState<number[]>([]);
-    const [yOffsets, setYOffsets] = React.useState<number[]>([]);
+    const [fieldIndexs, setFieldIndexs] = React.useState<FieldIndex[]>([]);
 
     useEffect(() => {
         getAllChampions().then((champions) => {
             setChampions(champions);
+            
         });
     }, []);
 
+    //See GenerationStrategies for more info
     useEffect(() => {
-        const xs = [center.x];
-        const ys = [center.y];
-        const w = tileWidth;
-        const h = w * 14.2 / 8.2; // adjust for non-regular hexagons
-
-        for (let i = 1; i < champions.length; i++) {
-            const xOffset: number = xs[i - 1] + (2 * (i % 2) - 1) * 3 / 2 * w
-            const yOffset: number = ys[i - 1] + (2 * ((i + 1) % 2) - 1) * sqrt3 / 2 * h
-            xs.push(xOffset)
-            ys.push(yOffset)
-        }
-
-        setXOffsets(xs);
-        setYOffsets(ys);
-    }, [center, champions]);
+        const iterator = new FieldIterator(tileWidth, tileWidth * 14.2 / 8.2, 0);
+        setFieldIndexs(champions.map(() => {
+            return iterator.next();
+        }));
+    }, [champions]);
 
     return (
         <div className="ChampField">
             {champions.map((champion, index) => {
                 return (
-                    <ChampThumbnail width={tileWidth} champion={champion} xOffset={xOffsets[index]} yOffset={yOffsets[index]} key={index} />
+                    <ChampThumbnail width={tileWidth} center={center} mouse={mouse} champion={champion} fieldIndex={fieldIndexs[index]} key={index} />
                 )
             })}
         </div>

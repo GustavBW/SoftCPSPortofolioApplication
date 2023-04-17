@@ -1,17 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Champion } from '../../ts/types';
 import './ChampThumbnail.css';
+import { FieldIndex } from '../../ts/fieldGenerationIterator';
 
 interface ThumbnailProps {
     champion: Champion,
-    /**
-     * Absolute x offset in pixels of the thumbnail
-     */
-    xOffset: number,
-    /**
-     * Absolute y offset in pixels of the thumbnail
-     */
-    yOffset: number
+    center: {x: number, y: number},
+    mouse: {x: number, y: number},
+    fieldIndex: FieldIndex,
     /**
      * Width of the thumbnail in pixels. The height is derived from this.
      */
@@ -20,14 +16,22 @@ interface ThumbnailProps {
 
 const path = "M 4 0 L 0 3 L 0 11 L 4 14 L 8 11 L 8 3 Z";
 
-export default function ChampThumbnail({ champion, xOffset, yOffset, width}: ThumbnailProps) {
-
-    const style = {
+export default function ChampThumbnail({ champion, center, mouse, fieldIndex, width}: ThumbnailProps) {
+    const [style, setStyle] = React.useState({
         width: width + "px",
         height: (width * 14.2 / 8) + "px",
-        top: yOffset + "px",
-        left: xOffset + "px"
-    }
+        top: (fieldIndex.y + center.y) + "px",
+        left: (fieldIndex.x + center.x) + "px"
+    });
+
+    useEffect(()=>{
+        setStyle({
+            width: width + "px",
+            height: (width * 14.2 / 8) + "px",
+            top: (fieldIndex.y + center.y) + "px",
+            left: (fieldIndex.x + center.x) + "px"
+        });
+    },[center, fieldIndex, width])
 
     return (
         <button className="ChampThumbnail" style={style}>

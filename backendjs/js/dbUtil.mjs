@@ -76,17 +76,43 @@ const insertRotationQuery = `INSERT INTO rotations (freeChampionIds, freeChampio
             VALUES (?, ?, ?)`;
 const insertChampionImageDataQuery = `INSERT INTO champion_image_data (image_full, image_sprite, image_group, image_x, image_y, image_w, image_h, champion_key)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+const updateChampionImageDataQuery = `UPDATE champion_image_data SET image_full = ?, image_sprite = ?, image_group = ?, image_x = ?, image_y = ?, image_w = ?, image_h = ? WHERE champion_key = ?`;
 const insertChampionStatsQuery = `INSERT INTO champion_stats (hp, hpperlevel, mp, mpperlevel, movespeed, armor, armorperlevel, spellblock, spellblockperlevel, attackrange, hpregen, hpregenperlevel, mpregen, mpregenperlevel, crit, critperlevel, attackdamage, attackdamageperlevel, attackspeedperlevel, attackspeed, champion_key)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+const updateChampionStatsQuery = `UPDATE champion_stats SET hp = ?, hpperlevel = ?, mp = ?, mpperlevel = ?, movespeed = ?, armor = ?, armorperlevel = ?, spellblock = ?, spellblockperlevel = ?, attackrange = ?, hpregen = ?, hpregenperlevel = ?, mpregen = ?, mpregenperlevel = ?,
+            crit = ?, critperlevel = ?, attackdamage = ?, attackdamageperlevel = ?, attackspeedperlevel = ?, attackspeed = ? WHERE champion_key = ?`;
+
+const updateChampionQuery = `
+  UPDATE champions 
+  SET 
+    version = ?, 
+    champion_id = ?, 
+    champion_key = ?, 
+    name = ?, 
+    title = ?, 
+    blurb = ?, 
+    attack = ?, 
+    defense = ?, 
+    magic = ?, 
+    difficulty = ?, 
+    tags = ?, 
+    partype = ?, 
+    imageUrl = ?, 
+    thumbnailUrl = ?
+  WHERE id = ?`;
 
 const getMaxOfNQuery = (table, column) => {
     return `SELECT * FROM ${table} WHERE ${column} = (SELECT MAX(${column}) FROM ${table})`;
 }
 
-const appendStatsAndImage = async (connection, json) => {
+const appendStatsAndImage = async (connection, json, isUpdate) => {
     const { full, sprite, group, x, y, w, h } = json.image;
     const imageData = [full, sprite, group, x, y, w, h, json.key];
-    await connection.query(insertChampionImageDataQuery, imageData);
+    if(isUpdate) {
+        await connection.query(updateChampionImageDataQuery, imageData);
+    } else {  
+        await connection.query(insertChampionImageDataQuery, imageData);
+    }
 
     const { hp, hpperlevel, mp, mpperlevel, movespeed, armor, armorperlevel, spellblock, spellblockperlevel, attackrange, hpregen, hpregenperlevel, mpregen, mpregenperlevel, crit, critperlevel, attackdamage, attackdamageperlevel, attackspeedperlevel, attackspeed } = json.stats;
     const stats = [hp, hpperlevel, mp, 
@@ -97,9 +123,18 @@ const appendStatsAndImage = async (connection, json) => {
          mpregenperlevel, crit, critperlevel, 
          attackdamage, attackdamageperlevel, 
          attackspeedperlevel, attackspeed, json.key];
-    await connection.query(insertChampionStatsQuery, stats);
+    if(isUpdate) {
+        await connection.query(updateChampionStatsQuery, stats);
+    } else {
+        await connection.query(insertChampionStatsQuery, stats);
+    }
 }
 
+/**
+ * Performs string operations to derive image urls from champion data
+ * @param {json data} champion 
+ * @returns { imageUrl, thumbnailUrl }
+ */
 const deriveImageUrls = (champion) => {
     const champImgName = champion.image.full.split('.')[0];
     const imageUrl = riotConfig.routeForSplashArt.url + champImgName + "_0.jpg";
@@ -107,24 +142,63 @@ const deriveImageUrls = (champion) => {
     return { imageUrl, thumbnailUrl };
 }
 
-export const insertOrUpdateChampion = async (connection, champ) => {
-    console.log("IMPLEMENT UPDATE");
+/**
+ * updates champion row id "id"
+ * @param {db connection} connection 
+ * @param {json champion data} data 
+ * @param {int} id 
+ */
+const updateChampion = async (connection, data, id) => {
     try {
-        const { imageUrl, thumbnailUrl } = deriveImageUrls(champ);
-        const { attack, defense, magic, difficulty } = champ.info;
-        const champion = [champ.version, champ.id, champ.key, champ.name, champ.title, champ.blurb, attack, defense, magic, difficulty, champ.tags.join(','), champ.partype, imageUrl, thumbnailUrl];
-        await connection.query(insertChampionQuery, champion, (err, result) => {
+        const { imageUrl, thumbnailUrl } = deriveImageUrls(data);
+        const { attack, defense, magic, difficulty } = data.info;
+        const champion = [data.version, data.id, data.key, data.name, data.title, data.blurb, attack, defense, magic, difficulty, data.tags.join(','), data.partype, imageUrl, thumbnailUrl, id];
+        await connection.query(updateChampionQuery, champion, (err, result) => {
             if (err) {
-                console.log('Error inserting champion');
+                console.log("ERROR updating champion with key: " + data.key + " and name: " + data.name);
+                console.log(err);
+            }
+        });
+        appendStatsAndImage(connection, data, true);
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+
+/**
+ * Inserts new champion if not exists, otherwise updates existing champion
+ * @param {db connection} connection 
+ * @param {json champion data} champ 
+ * @returns 
+ */
+export const insertOrUpdateChampion = async (connection, champ) => {
+    try {
+        const existingEntry = await getChampionByKey(connection, champ.key, (err, result) => {
+            if (err) {
+                console.log('Error checking if champion exists');
                 console.log(err);
                 throw err;
             }
-            appendStatsAndImage(connection, champ);
+            if (result[0] && result[0].id){
+                updateChampion(connection, champ, result[0].id);
+                return;
+            }else{
+                const { imageUrl, thumbnailUrl } = deriveImageUrls(champ);
+                const { attack, defense, magic, difficulty } = champ.info;
+                const champion = [champ.version, champ.id, champ.key, champ.name, champ.title, champ.blurb, attack, defense, magic, difficulty, champ.tags.join(','), champ.partype, imageUrl, thumbnailUrl];
+                connection.query(insertChampionQuery, champion, (err, result) => {
+                    if (err) {
+                        console.log('Error inserting champion');
+                        console.log(err);
+                        throw err;
+                    }
+                    appendStatsAndImage(connection, champ,false);
+                });
+            }
         });
-
-
     } catch (err) {
-        console.log('Error inserting champion');
+        console.log('Error inserting or updating champion');
         console.log(err);
         throw err;
     }
@@ -142,9 +216,13 @@ export const insertRotation = async (connection, json) => {
     }
 }
 
+/**
+ * Drops db, then recreates to wipe all data. Then creates tables
+ * @param {db connection} connection 
+ */
 export const create = async (connection) => {
     try {
-        console.log('Dropping tables...');
+        console.log('Dropping db if exists...');
         await connection.query("DROP DATABASE IF EXISTS " + dbConfig.database + ";");
         await connection.query("CREATE DATABASE " + dbConfig.database + ";");
         await connection.query("USE " + dbConfig.database + ";");
