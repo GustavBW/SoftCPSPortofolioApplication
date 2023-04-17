@@ -28,51 +28,59 @@ export default class FieldIterator {
     constructor(width: number, height: number, startLayer?: number) {
         this.width = width;
         this.height = height;
+        if(startLayer){
+            for(let i = 0; i < startLayer * 6; i++){
+                this.next();
+            }
+        }
         this.layer = startLayer || 0;
     }
 
-    private getCurrent(): FieldIndex {
-        this.index++;
+    private getCurrent(isCenter: boolean): FieldIndex {
+        if(!isCenter) this.index++;
         return {x: this.latest.x, y: this.latest.y, layer: this.layer, index: this.index};
     }
 
     next(): FieldIndex {
-        this.pointer++; // increment pointer before determining direction
 
-        // Check if we need to move to the next layer
-        if (this.index === this.layer * 6) {
+        if(this.index % this.layer == 0){
+            this.pointer++;
+        }
+        if (this.pointer > 5 || this.layer == 0){
+            this.latest.x += this.width;
             this.layer++;
-            this.latest.x = (this.layer % 2 === 0) ? this.width / 2 : 0;
-            this.latest.y -= this.height * 0.75;
-            return this.getCurrent();
+            this.pointer = 0;
         }
 
-        // Move to the next hexagon in the current layer
-        switch (this.pointer % 6) {
-            case 0: // Move left
+        // Apply a shift in accordence with what side of the hexagon we are on
+        this.shiftLatest(this.pointer);
+        return this.getCurrent(false);
+    }
+
+    private shiftLatest = (pointer: number) => {
+        switch (pointer) {
+            case 0: // Move up-left
+                this.latest.x -= this.width / 2;
+                this.latest.y -= this.height * 0.75;
+                break;
+            case 1: // Move left <-
                 this.latest.x -= this.width;
                 break;
-            case 1: // Move down-left
+            case 2: // Move down-left
                 this.latest.x -= this.width / 2;
                 this.latest.y += this.height * 0.75;
                 break;
-            case 2: // Move down-right
+            case 3: // Move down-right
                 this.latest.x += this.width / 2;
                 this.latest.y += this.height * 0.75;
                 break;
-            case 3: // Move right
+            case 4: // Move right
                 this.latest.x += this.width;
                 break;
-            case 4: // Move up-right
+            case 5: // Move up-right
                 this.latest.x += this.width / 2;
                 this.latest.y -= this.height * 0.75;
                 break;
-            case 5: // Move up-left
-                this.latest.x -= this.width / 2;
-                this.latest.y -= this.height * 0.75;
-                break;
-        }
-
-        return this.getCurrent();
+        }        
     }
 }

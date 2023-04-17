@@ -14,8 +14,8 @@ function App() {
       const { innerWidth, innerHeight } = window;
       setCenter({ x: innerWidth / 2, y: innerHeight / 2 });
     };
-
     handleResize();
+    
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);

@@ -10,6 +10,7 @@
   --border-gradient-1: #74541e;
   --border-gradient-2: #654d25;
   --border-gradient-3: #9f7229;
+  --text-color: #bb8c40;
 
   background-color: var(--bg-color-1);
 
@@ -18,6 +19,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+.hidden{
+  display: none;
 }
 
 a {
