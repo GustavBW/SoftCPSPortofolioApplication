@@ -8,7 +8,6 @@ const riotConfig = config.riotConfig;
 const doLoadCycle = async () => {
     const timeA = new Date().getTime();
     // Get the current rotation
-    // Get the current champions
     const rotationPromise = await fetch(riotConfig.routeForChampionRotations.url, {
         headers: riotConfig.routeForChampionDetails.public ? {} : riotConfig.authHeader,
         mode: 'no-cors'
@@ -18,7 +17,7 @@ const doLoadCycle = async () => {
         console.log('Error loading champion rotation');
         console.log(err);
     });
-
+    //get base champion information
     const championsPromise = await fetch(riotConfig.routeForChampions.url, {
         mode: 'no-cors',
         headers: riotConfig.routeForChampionDetails.public ? {} : riotConfig.authHeader
@@ -32,7 +31,7 @@ const doLoadCycle = async () => {
         console.log('Error loading champions');
         console.log(err);
     });
-
+    //get extended champion information
     const championsDetailsPromise = await fetch(riotConfig.routeForChampionDetails.url, {
         mode: 'no-cors',
         headers: riotConfig.routeForChampionDetails.public ? {} : riotConfig.authHeader

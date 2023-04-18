@@ -2,8 +2,8 @@ import mysql from 'mysql';
 import { create, useDB, getMaxOfN } from './dbUtil.mjs';
 import { insertOrUpdateChampion, getChampionByKey } from './ChampionRepository.mjs';
 import { insertOrUpdateRotation } from './RotationsRepository.mjs';
-import { insertOrUpdateStats, insertOrUpdateImage } from './StatsAndImageData.mjs';
-import { insertOrUpdateSkins } from './SkinsRepository.mjs';
+import {getAbilityByChampionAndName} from './ChampionAbilitiesRepository.mjs';
+import { insertOrUpdateSkin } from './ChampSkinsRepository.mjs';
 import { insertOrUpdateAbility } from './ChampionAbilitiesRepository.mjs';
 import config from '../../env.json' assert { type: "json" };
 
@@ -57,7 +57,7 @@ const db = {
             insertOrUpdateAbility(connection, ability, expandedChampion.name);
         });
         Object.values(await expandedChampion.skins).forEach((skin) => {
-            insertOrUpdateSkins(connection, skin, expandedChampion.name);
+            insertOrUpdateSkin(connection, skin, expandedChampion.name);
         });
     },
     /**
@@ -110,12 +110,12 @@ const db = {
         return result;
     },
     /**
-     * @param {int} id - the champion_key of the champion to get stats for
+     * @param {int} key - the champion_key of the champion to get stats for
      * @returns the statblock for said champion
      */
-    getStats: async (id) => {
+    getChampionStats: async (key) => {
         const result = new Promise((resolve, reject) => {
-            getStatsForChampion(connection, id, (err, results) => {
+            getStatsForChampion(connection, key, (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -125,9 +125,21 @@ const db = {
         });
         return result;
     },
-    getAbilities: async (id) => {
+    getChampionAbilities: async (key) => {
         const result = new Promise((resolve, reject) => {
-            connection.query('SELECT * FROM abilities WHERE champion_key = ?', [id], (err, results) => {
+            connection.query('SELECT * FROM abilities WHERE champion_key = ?', [key], (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+        return result;
+    },
+    getAbilityByKeyAndName: async (key, name) => {
+        const result = new Promise((resolve, reject) => {
+            getAbilityByChampionAndName(connection, key, name, (err, results) => {
                 if (err) {
                     reject(err);
                 } else {

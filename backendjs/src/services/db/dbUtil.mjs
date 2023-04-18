@@ -3,6 +3,7 @@ import { createSkinsTableQuery } from './ChampSkinsRepository.mjs';
 import { createChampionsTableQuery } from './ChampionRepository.mjs';
 import { createChampionStatsTableQuery, createChampionImageDataQuery } from './StatsAndImageData.mjs';
 import { createRotationsTableQuery } from './RotationsRepository.mjs';
+import { createFetchTimesTableQuery } from './BackendStatsRepository.mjs';
 const dbConfig = config.dbConfig;
 const riotConfig = config.riotConfig;
 
@@ -27,6 +28,7 @@ export const create = async (connection) => {
         await connection.query(createChampionImageDataQuery);
         await connection.query(createChampionStatsTableQuery);
         await connection.query(createSkinsTableQuery);
+        await connection.query(createFetchTimesTableQuery);
     } catch (err) {
         console.log('Error creating tables');
         console.log(err);
