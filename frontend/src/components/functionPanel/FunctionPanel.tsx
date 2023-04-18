@@ -3,19 +3,21 @@ import { Champion } from '../../ts/types';
 import './FunctionPanel.css';
 import { SearchFilter } from '../../ts/filters';
 import Menu from './menu/Menu';
+import { AnchorTypes } from '../movement/MovementAnchor';
 
 interface FunctionPanelProps {
     setSearchTerm: (term: string) => void;
     setFilterType: (filter: SearchFilter<Champion>) => void;
+    setAnchorType: (type: AnchorTypes) => void;
 }
 
 const path = "M 0 20 L 0 10 L 10 0 L 80 0 L 90 10 L 90 20 Z";
 const path2 = "M 21 20 L 23 18 L 68 18 L 70 20 Z";
 const path3 = "M 1 20 L 1 7 L 7 1 L 83 1 L 89 7 L 89 20 Z";
-export default function FunctionPanel({ setSearchTerm, setFilterType }: FunctionPanelProps) {
+export default function FunctionPanel({ setSearchTerm, setFilterType, setAnchorType }: FunctionPanelProps) {
     //This is just the background, the rest is in the menu component
     return (
-        <div className="FunctionPanel"> 
+        <div className="FunctionPanel" onMouseEnter={e=> setAnchorType(AnchorTypes.Mouse)} onMouseLeave={e=> setAnchorType(AnchorTypes.Movement)}> 
             <svg className="relative" width="100%" height="100%" id="function-panel" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90.2 20.2"  aria-label="menu">
                 <defs>
                     <clipPath id="fp-clip-path">
@@ -36,7 +38,7 @@ export default function FunctionPanel({ setSearchTerm, setFilterType }: Function
                 <path id="fp-path-1" d={path} stroke="url(#fp-border-gradient)" strokeWidth="0.5" fill="url(#fp-image-1)" />
                 <path id="fp-path-2" d={path2} stroke="url(#fp-border-gradient)" strokeWidth="0.1" fill="url(#fp-image-1)" />
             </svg>
-            <Menu setSearchTerm={setSearchTerm} setFilterType={setFilterType} />
+            <Menu setSearchTerm={setSearchTerm} setFilterType={setFilterType} setAnchorType={setAnchorType}/>
         </div>
     );
 }

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Champion } from '../../ts/types';
 import './ChampThumbnail.css';
 import { FieldIndex } from '../../ts/fieldGenerationIterator';
+import { AnchorTypes } from '../movement/MovementAnchor';
 
 interface ThumbnailProps {
     champion: Champion,
@@ -11,12 +12,14 @@ interface ThumbnailProps {
     /**
      * Width of the thumbnail in pixels. The height is derived from this.
      */
-    width: number
+    width: number,
+    setAnchorType: (type: AnchorTypes) => void,
+    setSelectedChampion: (champion: Champion) => void
 }
 
 //const path = "M 4 0 L 0 3 L 0 11 L 4 14 L 8 11 L 8 3 Z";
 
-export default function ChampThumbnail({ champion, center, mouse, fieldIndex, width}: ThumbnailProps) {
+export default function ChampThumbnail({ champion, center, mouse, fieldIndex, width, setAnchorType, setSelectedChampion }: ThumbnailProps) {
     const [path, setPath] = React.useState<string>("M 4 0 L 0 3 L 0 11 L 4 14 L 8 11 L 8 3 Z");
     const height = width * 14.2 / 8;
     const [style, setStyle] = React.useState({
@@ -43,9 +46,10 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
 
     return (
         <button className="ChampThumbnail" 
-            style={{ ...style, zIndex: zIndex + "", transitionDelay: (1 / champion.champion_key) + ""}} onClick={e => console.log("You clicked; " + champion.name)} 
-            onMouseOver={e => setHover(true)}
-            onMouseLeave={e => setHover(false)}
+            style={{ ...style, zIndex: zIndex + "", transitionDelay: (((1 - (1 / champion.champion_key)) * 5) + 1) + ""}} 
+            onClick={e=>setSelectedChampion(champion)} 
+            onMouseOver={e => {setHover(true); setAnchorType(AnchorTypes.Grabber)}} 
+            onMouseLeave={e => {setHover(false); setAnchorType(AnchorTypes.Movement)}}
             aria-label={champion.name}
             >
             {hover ? <h1 className="name-tag">{champion.name}</h1> : <></>}

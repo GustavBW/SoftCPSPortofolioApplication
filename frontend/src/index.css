@@ -80,6 +80,10 @@
   cursor: none;
 }
 
+button, input, div, p, h1, h2, ul, ol, li {
+  cursor: none !important;
+}
+
 .absolute{
   position: absolute;
 }
@@ -129,11 +133,11 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  filter: drop-shadow(0 0 0.5rem white);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: none;
 }
 
 @media (prefers-color-scheme: light) {

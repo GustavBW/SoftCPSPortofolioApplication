@@ -10,11 +10,13 @@ function App() {
   const [center, setCenter] = useState({ x: 0, y: 0 }); // in pixels
   const [mouse, setMouse] = useState({ x: 0, y: 0 }); // in pixels
   const [fieldRadius, setFieldRadius] = useState(0); // in pixels
-  const [searchTerm, setSearchTerm] = useState("v"); // in pixels
-  const [championFilter, setChampionFilter] = useState(championFilters[0]);
+  const [searchTerm, setSearchTerm] = useState("v"); // from function panel > menu into ChampField
+  const [championFilter, setChampionFilter] = useState(championFilters[0]); //Champion attribute filter function
+  const [anchorType, setAnchorType] = useState(AnchorTypes.Movement); //Champion attribute filter function
+  const [selectedChampion, setSelectedChampion] = useState<Champion | null>(null); //Champion attribute filter function
 
-  console.log(championFilter)
-
+  //Due to the heavy use of SVG elements, which does not scale as regular DOM elements, 
+  //"center" is used to make sure the scaling is accurate.
   useLayoutEffect(() => {
     const handleResize = () => {
       const { innerWidth, innerHeight } = window;
@@ -22,14 +24,15 @@ function App() {
     };
     handleResize();
     window.addEventListener("resize", handleResize);
+    //Used on Component.unmount
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <div className="App" onMouseMove={e => setMouse({x: e.clientX, y: e.clientY})}>
-      <FunctionPanel setSearchTerm={setSearchTerm} setFilterType={setChampionFilter} />
-      <MovementAnchor center={center} mouse={mouse} type={AnchorTypes.Movement} />
-      <ChampField center={center} mouse={mouse} filterOn={championFilter} searchTerm={searchTerm}/>
+      <FunctionPanel setSearchTerm={setSearchTerm} setFilterType={setChampionFilter} setAnchorType={setAnchorType}/>
+      <MovementAnchor center={center} mouse={mouse} type={anchorType} />
+      <ChampField setSelectedChampion={setSelectedChampion} center={center} mouse={mouse} filterOn={championFilter} searchTerm={searchTerm} setAnchorType={setAnchorType} />
       <img className="background" loading="lazy" src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/lcu-article-backdrop.jpg" alt="background" />
     </div>
   )

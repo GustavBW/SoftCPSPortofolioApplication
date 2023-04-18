@@ -1,7 +1,7 @@
 .FunctionPanel {
     position: absolute;
     display: flex;
-
+    left: 50%;
     width: 33%;
     z-index: 1;
     overflow: hidden;

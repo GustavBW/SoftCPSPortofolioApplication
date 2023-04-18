@@ -42,25 +42,33 @@ export interface FieldIteratorState {
      * Pointer to current side of hexagon
      */
     pointer: number;
+    rawWidth: number;
+    rawHeight: number;
 }
-
 
 const getCurrent = (state: FieldIteratorState): FieldIndex => {
     state.index++;
-    return { x: state.latest!.x, y: state.latest!.y, layer: state.layer, index: state.index};
+    return { 
+        x: state.latest!.x,
+        y: state.latest!.y,
+        layer: state.layer, 
+        index: state.index
+    };
 }
 
 const iterateField = (state: FieldIteratorState): FieldIndex => {
+
     if(state.latest == null) {
-        state.latest = {x: 0, y: 0};
+        //Accounting for tile mounting point at top left corner
+        state.latest = {x: 0 - (state.rawWidth / 2), y: 0 - (state.rawHeight / 2)};
         return { x: state.latest.x, y: state.latest.y, layer: state.layer, index: state.index };
     }
 
-    if (state.index % state.layer == 0){
+    if (state.index % state.layer == 0){ //whenever we reach the end of a layer
         state.pointer++;
     }
-    if (state.pointer > 5 || state.layer == 0){
-        state.latest.x += state.width;
+    if (state.pointer > 5 || state.layer == 0){ //whenever we reach the end of a hexagon, reset pointer
+        state.latest.x += state.width;          //also reset when the layer is 0 - X % 0 doesn't go so well
         state.layer++;
         state.pointer = 0;
     }
@@ -72,28 +80,32 @@ const iterateField = (state: FieldIteratorState): FieldIndex => {
 export default iterateField;
 
 const shiftLatest = (state: FieldIteratorState) => {
+    //based on the side of the "incircling" hexagon of the current layer we are on, shift the latest hexagon
+    const width = state.width;
+    const height = state.height;
+
     switch (state.pointer) {
         case 0: // Move up-left
-            state.latest!.x -= state.width / 2;
-            state.latest!.y -= state.height * 0.75;
+            state.latest!.x -= width / 2;
+            state.latest!.y -= height * 0.75;
             break;
         case 1: // Move left <-
-            state.latest!.x -= state.width;
+            state.latest!.x -= width;
             break;
         case 2: // Move down-left
-            state.latest!.x -= state.width / 2;
-            state.latest!.y += state.height * 0.75;
+            state.latest!.x -= width / 2;
+            state.latest!.y += height * 0.75;
             break;
         case 3: // Move down-right
-            state.latest!.x += state.width / 2;
-            state.latest!.y += state.height * 0.75;
+            state.latest!.x += width / 2;
+            state.latest!.y += height * 0.75;
             break;
         case 4: // Move right
-            state.latest!.x += state.width;
+            state.latest!.x += width;
             break;
         case 5: // Move up-right
-            state.latest!.x += state.width / 2;
-            state.latest!.y -= state.height * 0.75;
+            state.latest!.x += width / 2;
+            state.latest!.y -= height * 0.75;
             break;
     }        
 }
