@@ -1,8 +1,7 @@
 import express from 'express';
 import startCacheLoader from './js/cacheLoader/cacheLoader.mjs';
 import config from './env.json' assert { type: "json" };
-import db from './js/db.mjs';
-import { appendHeaders } from './js/apiUtil.mjs';
+import db from './js/db/db.mjs';
 import cors from 'cors';
 
 const apiRoot = config.appConfig.apiRoot;
@@ -37,9 +36,16 @@ server.get(apiRoot + '/champions/:id/stats', async (req, res) => {
     res.send(stats);
 });
 
+server.get(apiRoot + '/champions/:id/abilities', async (req, res) => {
+    const abilities = await db.getAbilities(req.params.id);
+    res.send(abilities);
+});
+
 server.get(apiRoot + '/rotation', async (req, res) => {
     const rotation = await db.getNewestRotation();
     res.send(rotation);
 });
+
+
 
 startCacheLoader();

@@ -1,9 +1,15 @@
 import mysql from 'mysql';
-import { create, insertOrUpdateChampion, insertRotation, useDB, getChampionByKey, getStatsForChampion, getMaxOfN } from './dbUtil.mjs';
-import config from '../env.json' assert { type: "json" };
+import { create, useDB, getMaxOfN } from './dbUtil.mjs';
+import { insertOrUpdateChampion, getChampionByKey } from './ChampionRepository.mjs';
+import { insertOrUpdateRotation } from './RotationsRepository.mjs';
+import { insertOrUpdateStats, insertOrUpdateImage } from './StatsAndImageData.mjs';
+import { insertOrUpdateSkins } from './SkinsRepository.mjs';
+import { insertOrUpdateAbility } from './ChampionAbilitiesRepository.mjs';
+import config from '../../env.json' assert { type: "json" };
 
 const dbConfig = config.dbConfig;
 
+//Defaulting to no database as it is taken down and reestablished as the first step of create()
 const connection = mysql.createConnection({...dbConfig, database: ""});
 connection.connect((error) => {
     if (error) {
@@ -43,11 +49,23 @@ const db = {
         await insertOrUpdateChampion(connection, await data);
     },
     /**
+     * Loads the details, i.e. abilities and skins, for a single champion into the db
+     * @param {expanded champion json} data for a champion
+     */
+    loadChampionDetails: async (expandedChampion) => {
+        Object.values(await expandedChampion.abilities).forEach((ability) => {
+            insertOrUpdateAbility(connection, ability, expandedChampion.name);
+        });
+        Object.values(await expandedChampion.skins).forEach((skin) => {
+            insertOrUpdateSkins(connection, skin, expandedChampion.name);
+        });
+    },
+    /**
      * Inserts a single rotation json object into the correct columns in the db
      * @param {rotation json} data
      */
     loadRotation: async (data) => {
-        await insertRotation(connection, await data);
+        await insertOrUpdateRotation(connection, await data);
     },
     /**
      * @param {int[]} keyValues - the champion_keys of the champions to get
@@ -98,6 +116,18 @@ const db = {
     getStats: async (id) => {
         const result = new Promise((resolve, reject) => {
             getStatsForChampion(connection, id, (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+        return result;
+    },
+    getAbilities: async (id) => {
+        const result = new Promise((resolve, reject) => {
+            connection.query('SELECT * FROM abilities WHERE champion_key = ?', [id], (err, results) => {
                 if (err) {
                     reject(err);
                 } else {

@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import db from '../db.mjs';
+import db from '../db/db.mjs';
 import config from '../../env.json' assert { type: "json" };
 const appConfig = config.appConfig;
 const riotConfig = config.riotConfig;
@@ -10,7 +10,7 @@ const doLoadCycle = async () => {
     // Get the current rotation
     // Get the current champions
     const rotationPromise = await fetch(riotConfig.routeForChampionRotations.url, {
-        headers: riotConfig.authHeader,
+        headers: riotConfig.routeForChampionDetails.public ? {} : riotConfig.authHeader,
         mode: 'no-cors'
     }).then((res) => 
         db.loadRotation(res.json())
@@ -20,7 +20,8 @@ const doLoadCycle = async () => {
     });
 
     const championsPromise = await fetch(riotConfig.routeForChampions.url, {
-        mode: 'no-cors'
+        mode: 'no-cors',
+        headers: riotConfig.routeForChampionDetails.public ? {} : riotConfig.authHeader
     }).then((res) => {
         res.json().then((json) => {
             Object.values(json.data).map((champion) => {
@@ -32,7 +33,21 @@ const doLoadCycle = async () => {
         console.log(err);
     });
 
-    await Promise.all([rotationPromise, championsPromise])
+    const championsDetailsPromise = await fetch(riotConfig.routeForChampionDetails.url, {
+        mode: 'no-cors',
+        headers: riotConfig.routeForChampionDetails.public ? {} : riotConfig.authHeader
+    }).then((res) => {
+        res.json().then((json) => {
+            Object.values(json.data).map((champion) => {
+                db.loadChampionDetails(champion);
+            })
+        });
+    }).catch((err) => {
+        console.log('Error loading champion details');
+        console.log(err);
+    });
+
+    await Promise.all([rotationPromise, championsPromise, championsDetailsPromise])
     .then(() => {
         console.log(`Cache loader total fetch time: ${new Date().getTime() - timeA}ms`);
         console.log(`Next update in: ${appConfig.recacheRateMinutes} minutes`);
