@@ -4,6 +4,8 @@ import { getAllChampions } from '../../ts/api';
 import ChampThumbnail from '../champion/ChampThumbnail';
 import './ChampField.css';
 import iterateField, { FieldIndex, FieldIteratorState } from '../../ts/fieldGenerationIterator';
+import { SearchFilter } from '../../ts/filters';
+import levenshteinSort from '../../ts/levelstein';
 
 interface ChampFieldProps {
     /**
@@ -15,28 +17,29 @@ interface ChampFieldProps {
      */ 
     mouse: {x: number, y: number},
     /**
-     * Informs the app about the radius of the field (in pixels)
+     * What aspect of champion data to sort based on
+     * Default: name
      */
-    setRadius: (radius: number) => void,
+    filterOn: SearchFilter<Champion>,
     /**
      * The algorithm used to sort the champion list.
      * Default: Reversed Alphabetical
      */
-    algorithm?: (champions: Champion[]) => Champion[]
+    searchTerm: string
 }
 
 const sqrt3 = Math.sqrt(3);
 const tileWidthPercent = .075; //percentage of the screen width
 
-export default function ChampField({ center, mouse, setRadius, algorithm }: ChampFieldProps) {
+export default function ChampField({ center, mouse, filterOn, searchTerm }: ChampFieldProps) {
     const [champions, setChampions] = React.useState<Champion[]>([]);
     const [fieldIndicies, setFieldIndicies] = React.useState<FieldIndex[]>([]);
     const [tileWidth, setTileWidth] = React.useState<number>(2 * center.x * tileWidthPercent * 1.1);
+    
 
-    const updatesChampionIndicies = (champs: Champion[]) => {
-        if(algorithm){
-            champs = algorithm(champs);
-        }
+    console.log(filterOn)
+
+    const updateChampionIndicies = (champs: Champion[]) => {
         const width = 2 * center.x * tileWidthPercent * 1.1;
         const state: FieldIteratorState = {
             layer: 0, index: 0, width: width * 1.1, height: width * (14.2 / 8.2) * 1.1, pointer: 0, 
@@ -51,19 +54,28 @@ export default function ChampField({ center, mouse, setRadius, algorithm }: Cham
     }
 
     useEffect(() => {
-        getAllChampions().then((champions) => {
-            updatesChampionIndicies(champions);
-            setChampions(champions);
+        const timeA = performance.now();
+        getAllChampions().then(champs => {
+            console.log(`fetching champions took ${performance.now() - timeA} ms`);
+            updateChampionIndicies(champs);
+            setChampions(champs);
         });
-    }, [algorithm]);
+    }, []);
+
+    useEffect(() => {
+        const timeA = performance.now();
+        setChampions(levenshteinSort(champions, filterOn, searchTerm));
+        const timeB = performance.now();
+        console.log(`sorting took ${timeB - timeA} ms`);
+    }, [searchTerm, filterOn]);
 
     //See GenerationStrategies for more info
     useEffect(() => {
-        updatesChampionIndicies(champions);
+        updateChampionIndicies(champions);
     }, [champions]);
 
     useEffect(() => {
-        updatesChampionIndicies(champions);
+        updateChampionIndicies(champions);
     },[center]);
 
     return (

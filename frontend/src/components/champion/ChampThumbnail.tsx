@@ -43,7 +43,7 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
 
     return (
         <button className="ChampThumbnail" 
-            style={{ ...style, zIndex: zIndex + ""}} onClick={e => console.log("You clicked; " + champion.name)} 
+            style={{ ...style, zIndex: zIndex + "", transitionDelay: (1 / champion.champion_key) + ""}} onClick={e => console.log("You clicked; " + champion.name)} 
             onMouseOver={e => setHover(true)}
             onMouseLeave={e => setHover(false)}
             aria-label={champion.name}
@@ -69,7 +69,7 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
                     <image className={`clipped-image ${hover ? "" : ""}`} style={{ zIndex: "-10" }} xlinkHref={champion.thumbnailUrl}/>
                 </pattern>
                 <path d={path} fill={"url(#image-" + champion.champion_key+")"} clipPath="url(#hexagon)" />
-                <path d={path} stroke={"url(#border-gradient-" + champion.champion_key+")"} strokeWidth="0.1" fill="none" />
+                <path d={path} stroke={"url(#border-gradient-" + champion.champion_key+")"} strokeWidth="0.2" fill="none" />
                 <path d={path} fill={"url(#gradient-" + champion.champion_key+")"} className={hover ? "" : "hidden"} />
             </svg>
         </button>
