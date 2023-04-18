@@ -140,7 +140,8 @@ export const createAbilitiesTableQuery = `CREATE TABLE IF NOT EXISTS abilities (
     angle VARCHAR(255) NOT NULL,
     castTime VARCHAR(255) NOT NULL,
     effectRadius VARCHAR(255) NOT NULL,
-    targetRange VARCHAR(255) NOT NULL
+    targetRange VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
 )`;
 
 const updateAbilityQuery = `

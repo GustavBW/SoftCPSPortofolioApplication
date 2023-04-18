@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import db from '../db/db.mjs';
-import config from '../../env.json' assert { type: "json" };
+import config from '../../../env.json' assert { type: "json" };
 const appConfig = config.appConfig;
 const riotConfig = config.riotConfig;
 
@@ -32,12 +32,13 @@ const doLoadCycle = async () => {
         console.log(err);
     });
     //get extended champion information
+    /**
     const championsDetailsPromise = await fetch(riotConfig.routeForChampionDetails.url, {
         mode: 'no-cors',
         headers: riotConfig.routeForChampionDetails.public ? {} : riotConfig.authHeader
     }).then((res) => {
         res.json().then((json) => {
-            Object.values(json.data).map((champion) => {
+            Object.values(json).map((champion) => {
                 db.loadChampionDetails(champion);
             })
         });
@@ -45,11 +46,16 @@ const doLoadCycle = async () => {
         console.log('Error loading champion details');
         console.log(err);
     });
+    */
 
-    await Promise.all([rotationPromise, championsPromise, championsDetailsPromise])
+    await Promise.all([rotationPromise, championsPromise
+    //     , championsDetailsPromise
+    ])
     .then(() => {
+        const deltaT = new Date().getTime() - timeA;
         console.log(`Cache loader total fetch time: ${new Date().getTime() - timeA}ms`);
         console.log(`Next update in: ${appConfig.recacheRateMinutes} minutes`);
+        db.addFetchTime(deltaT);
     });
 };
 

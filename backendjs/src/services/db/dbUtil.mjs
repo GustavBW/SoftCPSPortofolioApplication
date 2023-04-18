@@ -1,9 +1,10 @@
-import config from '../../env.json' assert { type: "json" };
+import config from '../../../env.json' assert { type: "json" };
 import { createSkinsTableQuery } from './ChampSkinsRepository.mjs';
 import { createChampionsTableQuery } from './ChampionRepository.mjs';
 import { createChampionStatsTableQuery, createChampionImageDataQuery } from './StatsAndImageData.mjs';
 import { createRotationsTableQuery } from './RotationsRepository.mjs';
 import { createFetchTimesTableQuery } from './BackendStatsRepository.mjs';
+import { createAbilitiesTableQuery } from './ChampionAbilitiesRepository.mjs';
 const dbConfig = config.dbConfig;
 const riotConfig = config.riotConfig;
 
@@ -29,6 +30,7 @@ export const create = async (connection) => {
         await connection.query(createChampionStatsTableQuery);
         await connection.query(createSkinsTableQuery);
         await connection.query(createFetchTimesTableQuery);
+        await connection.query(createAbilitiesTableQuery);
     } catch (err) {
         console.log('Error creating tables');
         console.log(err);

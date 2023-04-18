@@ -1,7 +1,7 @@
 import express from 'express';
-import startCacheLoader from './js/cacheLoader/cacheLoader.mjs';
+import startCacheLoader from './src/services/cacheLoader/cacheLoader.mjs';
 import config from './env.json' assert { type: "json" };
-import db from './js/db/db.mjs';
+import db from './src/services/db/db.mjs';
 import cors from 'cors';
 
 const apiRoot = config.appConfig.apiRoot;
@@ -49,6 +49,17 @@ server.get(apiRoot + '/champions/:key/skins', async (req, res) => {
 server.get(apiRoot + '/rotation', async (req, res) => {
     const rotation = await db.getNewestRotation();
     res.send(rotation);
+});
+
+server.get(apiRoot + '/rotation/:id', async (req, res) => {
+    const rotation = await db.getRotation(req.params.id);
+    res.send(rotation);
+});
+
+server.get(apiRoot + '/cache/fetchtimes', async (req, res) => {
+    const amount = req.query.amount;
+    const fetchTimes = await db.getFetchTimes(amount);
+    res.send(fetchTimes);
 });
 
 

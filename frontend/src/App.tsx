@@ -3,6 +3,7 @@ import './App.css'
 import ChampField from './components/field/ChampField'
 import FunctionPanel from './components/functionPanel/FunctionPanel'
 import MovementAnchor, { AnchorTypes } from './components/movement/MovementAnchor'
+import Search from './components/search/Search'
 import SVGStyles from './components/svgStyles/SVGStyles'
 
 function App() {
@@ -22,7 +23,6 @@ function App() {
 
   return (
     <div className="App" onMouseMove={e => setMouse({x: e.clientX, y: e.clientY})}>
-      <SVGStyles />
       <FunctionPanel />
       <MovementAnchor center={center} mouse={mouse} type={AnchorTypes.Movement} />
       <ChampField center={center} mouse={mouse} setRadius={setFieldRadius}/>

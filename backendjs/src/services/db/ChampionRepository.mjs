@@ -1,4 +1,6 @@
 import {appendStatsAndImage} from './StatsAndImageData.mjs';
+import config from '../../../env.json' assert { type: "json" };
+const riotConfig = config.riotConfig;
 
 export const getChampionByKey = async (connection, key, callback) => {
     connection.query("SELECT * FROM champions WHERE champion_key = ?", [key], (err, result) => callback(err,result));

@@ -5,7 +5,8 @@ import { insertOrUpdateRotation } from './RotationsRepository.mjs';
 import {getAbilityByChampionAndName} from './ChampionAbilitiesRepository.mjs';
 import { insertOrUpdateSkin } from './ChampSkinsRepository.mjs';
 import { insertOrUpdateAbility } from './ChampionAbilitiesRepository.mjs';
-import config from '../../env.json' assert { type: "json" };
+import config from '../../../env.json' assert { type: "json" };
+import { insertFetchTimeNow } from './BackendStatsRepository.mjs';
 
 const dbConfig = config.dbConfig;
 
@@ -41,6 +42,34 @@ connection.connect((error) => {
  * Unified access to the database
  */
 const db = {
+
+    /**
+     * Gathers the last "amount" amount of fetch times from the db
+     * @param {int} amount 
+     * @returns 
+     */
+    getFetchTimes: async (amount) => {
+        return new Promise((resolve, reject) => {
+            connection.query('SELECT * FROM fetch_times', (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    if(amount){
+                        resolve(results.slice(-amount));
+                    }
+                    resolve(results);
+                }
+            });
+        });
+    },
+    /**
+     * Adds a fetch time along side timestamp to the db
+     * @param {ms} fetchTimeMS 
+     * @returns 
+     */
+    addFetchTime: async (fetchTimeMS) => {
+        await insertFetchTimeNow(await connection, fetchTimeMS);
+    },
     /**
      * Inserts a single champion json object into the correct columns in the db
      * @param {champion json} data 

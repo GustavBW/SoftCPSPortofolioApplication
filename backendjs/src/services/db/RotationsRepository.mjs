@@ -1,8 +1,14 @@
-import { getFormattedNow } from "../time.mjs";
+const simplifiedDate = ()=>{
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    return `${year}-${month}-${day}`;
+}
 
 export const insertRotation = async (connection, json) => {
     try {
-        const values = [JSON.stringify(json.freeChampionIds), JSON.stringify(json.freeChampionIdsForNewPlayers), json.maxNewPlayerLevel,getFormattedNow()];
+        const values = [JSON.stringify(json.freeChampionIds), JSON.stringify(json.freeChampionIdsForNewPlayers), json.maxNewPlayerLevel, simplifiedDate()];
         await connection.query(insertRotationQuery, values);
         console.log('Rotation added to the table.');
     } catch (err) {
@@ -14,12 +20,7 @@ export const insertRotation = async (connection, json) => {
 
 export const updateRotation = async (connection, json, id) => {
     try {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1;
-        const day = now.getDate();
-
-        const values = [JSON.stringify(json.freeChampionIds), JSON.stringify(json.freeChampionIdsForNewPlayers), json.maxNewPlayerLevel,`${year}-${month}-${day}`];
+        const values = [JSON.stringify(json.freeChampionIds), JSON.stringify(json.freeChampionIdsForNewPlayers), json.maxNewPlayerLevel,simplifiedDate()];
         await connection.query(insertRotationQuery, values);
         console.log('Rotation added to the table.');
     } catch (err) {
@@ -35,7 +36,7 @@ export const getRotationForToday = async (connection) => {
     const month = now.getMonth() + 1;
     const day = now.getDate();
   
-    const query = `SELECT * FROM rotations WHERE DATE(serverLocalTimestamp) = '${year}-${month}-${day}'`;
+    const query = `SELECT * FROM rotations WHERE latestUpdate = '${year}-${month}-${day}'`;
     return new Promise((resolve, reject) => {
       connection.query(query, (err, result) => {
         if (err) {
@@ -57,7 +58,7 @@ export const getRotationForToday = async (connection) => {
 
 export const insertOrUpdateRotation = async (connection, json) => {
     try {
-        const existingEntry = await getRotation(connection, (err, result) => {
+        const existingEntry = await getRotationForToday(connection, (err, result) => {
             if (err) {
                 console.log('Error checking if rotation exists');
                 console.log(err);
@@ -83,11 +84,11 @@ export const createRotationsTableQuery = `CREATE TABLE IF NOT EXISTS rotations (
     freeChampionIds VARCHAR(500) NOT NULL,
     freeChampionIdsForNewPlayers VARCHAR(500) NOT NULL,
     maxNewPlayerLevel INT NOT NULL,
-    latestUpdate TIMESTAMP NOT NULL DEFAULT NOW(),
+    latestUpdate VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 )`;
 
-const insertRotationQuery = `INSERT INTO rotations (freeChampionIds, freeChampionIdsForNewPlayers, maxNewPlayerLevel, serverLocalTimestamp)
+const insertRotationQuery = `INSERT INTO rotations (freeChampionIds, freeChampionIdsForNewPlayers, maxNewPlayerLevel, latestUpdate)
             VALUES (?, ?, ?, ?)`;
 
 const updateRotationQuery = `UPDATE rotations SET freeChampionIds = ?, freeChampionIdsForNewPlayers = ?, maxNewPlayerLevel = ?, 

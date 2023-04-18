@@ -4,17 +4,40 @@
  * @returns 
  */
 const getBaseValuesOfSkin = (skinData) => {
-    const {name, id, isBase, availability, formatName, lootEligible, cost, sale, distribution, rarity, lore, release, set, splashPath, 
-        uncenteredSplashPath, tilePath, newEffects, newAnimations, newRecall, newVoice, newQuotes, voiceActor, voiceLines } = skinData;
-    //voice actor json object
-    const unwrappedVA = JSON.stringify(voiceActor);
-    //splash artist
-    const unwrappedSA = JSON.stringify(voiceLines);
-    //skin line
-    const unwrappedSet = JSON.stringify(set);
-    return  [name, id, isBase, availability, formatName, lootEligible, cost, sale, distribution, rarity, lore, release, splashPath, uncenteredSplashPath, tilePath, newEffects, newAnimations, newRecall, newVoice, newQuotes, unwrappedVA, unwrappedSA, unwrappedSet];
+    return [
+        skinData.name,
+        skinData.id,
+        skinData.isBase,
+        skinData.availability,
+        skinData.formatName,
+        skinData.lootEligible,
+        skinData.cost,
+        skinData.sale,
+        skinData.distribution,
+        skinData.rarity,
+        skinData.lore,
+        skinData.release,
+        JSON.stringify(skinData.set),
+        skinData.splashPath,
+        skinData.uncenteredSplashPath,
+        skinData.tilePath,
+        skinData.newEffects,
+        skinData.newAnimations,
+        skinData.newRecall,
+        skinData.newVoice,
+        skinData.newQuotes,
+        JSON.stringify(skinData.voiceActor),
+        JSON.stringify(skinData.splashArtist),
+    ];
 }
 
+/**
+ * 
+ * @param {db connection} connection 
+ * @param {string} champion 
+ * @param {string} skinName 
+ * @param {(res, err) => {}} callback 
+ */
 export const getSkinByChampionAndName = async (connection, champion, skinName, callback) => {
     const query = `SELECT * FROM skins WHERE champion_key = ? AND name = ?`;
     connection.query(query, [champion, skinName], (err, result) => callback(err, result));
@@ -36,7 +59,7 @@ export const insertSkin = async (connection, skinData, championKey) => {
  */
 export const insertOrUpdateSkin = async (connection, skinData, championKey) => {
     try {
-        const existingEntry = await getSkinByChampionAndName(connection, championKey, skinData, (err, result) => {
+        const existingEntry = await getSkinByChampionAndName(connection, championKey, skinData.name, (err, result) => {
             if (err) {
                 console.log('Error checking if skin exists');
                 console.log(err);
@@ -69,8 +92,8 @@ export const createSkinsTableQuery = `CREATE TABLE IF NOT EXISTS skins (
     distribution VARCHAR(255),
     rarity VARCHAR(255) NOT NULL,
     lore TEXT NOT NULL,
-    release DATE NOT NULL,
-    set VARCHAR(255),
+    releaseDate VARCHAR(255) NOT NULL,
+    skinLine VARCHAR(255),
     splashPath VARCHAR(255) NOT NULL,
     uncenteredSplashPath VARCHAR(255) NOT NULL,
     tilePath VARCHAR(255) NOT NULL,
@@ -84,9 +107,12 @@ export const createSkinsTableQuery = `CREATE TABLE IF NOT EXISTS skins (
     PRIMARY KEY (id)
     )`;
 
-const insertSkinQuery = `INSERT INTO skins (champion_key, name, id, isBase, availability, formatName, lootEligible, cost, sale, distribution, rarity, lore, release, set, splashPath, uncenteredSplashPath, tilePath, newEffects, newAnimations, newRecall, newVoice, newQuotes, voiceActor, splashArtist)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-const updateSkinQuery = `UPDATE skins SET champion_key = ?, name = ?, id = ?, isBase = ?, availability = ?, formatName = ?, lootEligible = ?, cost = ?, sale = ?, distribution = ?, rarity = ?, lore = ?, release = ?, set = ?, splashPath = ?, uncenteredSplashPath = ?, tilePath = ?, newEffects = ?, newAnimations = ?, newRecall = ?, newVoice = ?, newQuotes = ?, voiceActor = ?, splashArtist = ? 
+const insertSkinQuery = `INSERT INTO skins (champion_key, name, id, isBase, availability, formatName, lootEligible, cost, sale, 
+    distribution, rarity, lore, releaseDate, skinLine, splashPath, uncenteredSplashPath, tilePath, newEffects, newAnimations, 
+    newRecall, newVoice, newQuotes, voiceActor, splashArtist)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+const updateSkinQuery = `UPDATE skins SET champion_key = ?, name = ?, id = ?, isBase = ?, availability = ?, formatName = ?, lootEligible = ?, cost = ?, sale = ?, distribution = ?, rarity = ?, lore = ?, releaseDate = ?, skinLine = ?, splashPath = ?, uncenteredSplashPath = ?, tilePath = ?, newEffects = ?,
+    newAnimations = ?, newRecall = ?, newVoice = ?, newQuotes = ?, voiceActor = ?, splashArtist = ? 
     WHERE champion_key = ? AND name = ?`;
 
 
