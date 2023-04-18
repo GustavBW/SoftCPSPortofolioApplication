@@ -1,6 +1,25 @@
+import { getFormattedNow } from "../time.mjs";
+
 export const insertRotation = async (connection, json) => {
     try {
-        const values = [JSON.stringify(json.freeChampionIds), JSON.stringify(json.freeChampionIdsForNewPlayers), json.maxNewPlayerLevel];
+        const values = [JSON.stringify(json.freeChampionIds), JSON.stringify(json.freeChampionIdsForNewPlayers), json.maxNewPlayerLevel,getFormattedNow()];
+        await connection.query(insertRotationQuery, values);
+        console.log('Rotation added to the table.');
+    } catch (err) {
+        console.log('Error inserting rotation');
+        console.log(err);
+        throw err;
+    }
+}
+
+export const updateRotation = async (connection, json, id) => {
+    try {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+
+        const values = [JSON.stringify(json.freeChampionIds), JSON.stringify(json.freeChampionIdsForNewPlayers), json.maxNewPlayerLevel,`${year}-${month}-${day}`];
         await connection.query(insertRotationQuery, values);
         console.log('Rotation added to the table.');
     } catch (err) {
@@ -44,7 +63,7 @@ export const insertOrUpdateRotation = async (connection, json) => {
                 console.log(err);
                 throw err;
             }
-            if (result[0] && result[0].id){
+            if (result.length > 0){
                 updateRotation(connection, json, result[0].id);
                 return;
             }else{
@@ -64,9 +83,12 @@ export const createRotationsTableQuery = `CREATE TABLE IF NOT EXISTS rotations (
     freeChampionIds VARCHAR(500) NOT NULL,
     freeChampionIdsForNewPlayers VARCHAR(500) NOT NULL,
     maxNewPlayerLevel INT NOT NULL,
-    serverLocalTimestamp TIMESTAMP NOT NULL DEFAULT NOW(),
+    latestUpdate TIMESTAMP NOT NULL DEFAULT NOW(),
     PRIMARY KEY (id)
 )`;
 
 const insertRotationQuery = `INSERT INTO rotations (freeChampionIds, freeChampionIdsForNewPlayers, maxNewPlayerLevel, serverLocalTimestamp)
             VALUES (?, ?, ?, ?)`;
+
+const updateRotationQuery = `UPDATE rotations SET freeChampionIds = ?, freeChampionIdsForNewPlayers = ?, maxNewPlayerLevel = ?, 
+    latestUpdate = ? WHERE id = ?`;
