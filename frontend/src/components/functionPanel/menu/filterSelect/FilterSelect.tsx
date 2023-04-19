@@ -16,6 +16,23 @@ export default function FilterSelect({ setFilterType, setAnchorType }: FiltersPr
 
     return (
         <div className="FilterSelect">
+            <div className="filter-menu"
+                style={showFilters || hover ? { width: "300%", right: "-10rem", display: "flex" } : { width: "0", display: "none" }}
+                onMouseEnter={e => {setShowFilters(true); setHover(true); setAnchorType(AnchorTypes.Mouse)}}
+                onMouseLeave={e => { setShowFilters(false); setHover(false)}}
+            >
+                {championFilters.map((filter, i) => {
+                    return (
+                        <button key={i} className="filter-menu-item" onClick={e => {
+                            setFilterType(filter);
+                            setShowFilters(false);
+                            setHover(false);
+                        }}>
+                            {filter.displayName}
+                        </button>
+                    );
+                })}
+            </div>
             <button  className="filter-button"
                 onMouseEnter={e=>setHover(true)} 
                 onMouseLeave={e=>setHover(false)}
@@ -27,20 +44,7 @@ export default function FilterSelect({ setFilterType, setAnchorType }: FiltersPr
                     <path d={path} fill="var(--blue-6)" />
                 </svg>
             </button>
-            <div className="filter-menu" 
-                style={showFilters || hover ? {width: "300%", display: "flex"} : {width: "0", display: "hidden"}}
-                >
-                {championFilters.map((filter, i) => {
-                    return (
-                        <button key={i} className="filter-menu-item" onClick={e => {
-                            setFilterType(filter);
-                            setShowFilters(false);
-                        }}>
-                            {filter.displayName}
-                        </button>
-                    );
-                })}
-            </div>
+
         </div>
     );
 }

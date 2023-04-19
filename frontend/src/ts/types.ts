@@ -41,3 +41,9 @@ export interface Champion {
     imageUrl: string;
     thumbnailUrl: string;
 }
+
+export interface FetchTimeData {
+    id: number;
+    fetch_time_ms: number;
+    timestamp: Date;
+}

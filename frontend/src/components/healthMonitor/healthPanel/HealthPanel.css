@@ -1,0 +1,54 @@
+.HealthPanel{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    right: 0;
+    width: 33%;
+    z-index: 0;
+    height: 100%;
+    background-image: url("https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/lcu-article-backdrop.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0;
+    border: 1px solid var(--gold-3);
+    border-right: none;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+    padding: 1%;
+    box-sizing: border-box;
+    overflow: hidden;
+    pointer-events: all;
+    transition: all 0.3s ease-in-out;
+}
+
+.title{
+    font-size: 170%;
+}
+
+.fetch-time-title{
+    text-align: left;
+    font-weight: normal;
+}
+
+.fetch-time-container{
+
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.fetch-time-options{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 5%;
+    justify-content: space-evenly;
+    align-items: center;
+    place-items: center;
+    width: 100%;
+}
+.input-label-pair{
+    display:flex;
+    flex-direction: column;
+    width: 60%;
+}

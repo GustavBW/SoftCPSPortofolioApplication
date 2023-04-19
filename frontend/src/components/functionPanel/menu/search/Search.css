@@ -51,28 +51,9 @@
 
 .search-input {
     position: absolute;
-    border: none;
-    background: transparent;
-    padding: 5%;
-    border: 2px solid var(--gold-3);
-    height: 10%;
-    background-color: rgba(0, 0, 0, 0.5);
-    height: var(--circle-height);
-    transition: all 0.5s;
-    text-align: center;
-    font-size: 100%;
 }
 
-.search-input::placeholder{
-    color: white;
-    font-size: 100%;
-    text-align: center;
-}
 
-.search-input:focus {
-    outline: none;
-    filter: drop-shadow(0 0 0.1rem black);
-}
 
 .spyglass-doo-hickey {
     position: absolute;

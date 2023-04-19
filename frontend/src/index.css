@@ -80,6 +80,28 @@
   cursor: none;
 }
 
+input{
+  padding: 5%;
+  border: 2px solid var(--gold-4);
+  background-color: rgba(0, 0, 0, 0.5);
+  height: var(--circle-height);
+  transition: all 0.5s;
+  text-align: center;
+  font-size: 100%;
+}
+
+input::placeholder{
+  color: white;
+  font-size: 100%;
+  text-align: center;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--gold-3);
+  filter: drop-shadow(0 0 0.1rem black);
+}
+
 button, input, div, p, h1, h2, ul, ol, li {
   cursor: none !important;
 }
@@ -107,6 +129,7 @@ a:hover {
 
 body {
   margin: 0;
+  padding: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
@@ -124,7 +147,8 @@ h1 {
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0;
+  margin: 0;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;

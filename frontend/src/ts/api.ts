@@ -1,4 +1,4 @@
-import { Champion } from "./types";
+import { Champion, FetchTimeData } from "./types";
 import config from "../../env.json";
 
 const apiRoot = config.apiRoot;
@@ -33,6 +33,12 @@ export async function getChampionStats(id: string): Promise<any> {
 
 export async function getNewestRotation(): Promise<any> {
     const response = await fetch(`${serverUrl}${apiRoot}/rotation`, { headers: headers });
+    const data = await response.json();
+    return data;
+}
+
+export async function getLatestFetchTimeData(entries: number): Promise<FetchTimeData[]> {
+    const response = await fetch(`${serverUrl}${apiRoot}/cache/fetchtimes?entries=${entries}`, { headers: headers });
     const data = await response.json();
     return data;
 }

@@ -34,9 +34,9 @@ export default function FunctionPanel({ setSearchTerm, setFilterType, setAnchorT
                 </pattern>
                 <path d={path} fill={"url(#fp-image-background)"} clipPath="url(#fp-clip-path)" />
                 <path d={path} fill={"url(#fp-image-background)"} clipPath="url(#fp-clip-path)" />
-                <path id="fp-path-3" d={path3} stroke="url(#fp-border-gradient)" strokeWidth="0.1" fill="url(#fp-image-1)" />
-                <path id="fp-path-1" d={path} stroke="url(#fp-border-gradient)" strokeWidth="0.5" fill="url(#fp-image-1)" />
-                <path id="fp-path-2" d={path2} stroke="url(#fp-border-gradient)" strokeWidth="0.1" fill="url(#fp-image-1)" />
+                <path id="fp-path-3" d={path3} stroke="url(#fp-border-gradient)" strokeWidth="0.3" fill="url(#fp-image-background)" />
+                <path id="fp-path-1" d={path} stroke="url(#fp-border-gradient)" strokeWidth="0.5" fill="none" />
+                <path id="fp-path-2" d={path2} stroke="url(#fp-border-gradient)" strokeWidth="0.2" fill="none" />
             </svg>
             <Menu setSearchTerm={setSearchTerm} setFilterType={setFilterType} setAnchorType={setAnchorType}/>
         </div>

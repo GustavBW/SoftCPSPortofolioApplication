@@ -5,6 +5,7 @@ import FunctionPanel from './components/functionPanel/FunctionPanel'
 import MovementAnchor, { AnchorTypes } from './components/movement/MovementAnchor'
 import { Champion } from './ts/types'
 import { championFilters } from './ts/filters'
+import HealthMonitor from './components/healthMonitor/HealthMonitor'
 
 function App() {
   const [center, setCenter] = useState({ x: 0, y: 0 }); // in pixels
@@ -30,6 +31,7 @@ function App() {
 
   return (
     <div className="App" onMouseMove={e => setMouse({x: e.clientX, y: e.clientY})}>
+      <HealthMonitor setAnchorType={setAnchorType}/>
       <FunctionPanel setSearchTerm={setSearchTerm} setFilterType={setChampionFilter} setAnchorType={setAnchorType}/>
       <MovementAnchor center={center} mouse={mouse} type={anchorType} />
       <ChampField setSelectedChampion={setSelectedChampion} center={center} mouse={mouse} filterOn={championFilter} searchTerm={searchTerm} setAnchorType={setAnchorType} />
