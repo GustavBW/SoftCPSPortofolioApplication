@@ -16,13 +16,14 @@ interface InfoPanelProps {
 export default function InfoPanel({ title, content, onDeselect, visible }: InfoPanelProps) {
 
     return (
-        <div className="InfoPanel" onBlur={e => onDeselect()} onMouseLeave={e => onDeselect()} style={visible ? {display: "flex"} : {display: "hidden"}}>
+        <div className="InfoPanel" onBlur={e => onDeselect()} onMouseLeave={e => onDeselect()}>
             <svg className="info-panel-frame" viewBox="-13.1 -13.1 27.2 26.2" width="100%" height="100%" style={visible ? { display: "flex" } : { display: "hidden" }}>
                 <path d={path} />
             </svg>
+            <button className="info-panel-close" onClick={e => onDeselect()}>X</button>
+            <h1 className="info-panel-title">{title}</h1>
             <div className="info-panel-content">
-                <h1 className="info-panel-title">{title}</h1>
-                <div className="info-panel-text">{content}</div>
+                {content}
             </div>
         </div>
     )

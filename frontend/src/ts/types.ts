@@ -8,11 +8,11 @@ export interface Champion {
      */
     version: string;
     /**
-     * Riot internal champion id (name)
+     * Riot internal champion id (name) - unique
      */
     champion_id: string;
     /**
-     * Riot internal champion key (number)
+     * Riot internal champion key (number) - unique
      */
     champion_key: number;
     /**

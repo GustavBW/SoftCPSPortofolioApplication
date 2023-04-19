@@ -65,7 +65,7 @@
   --border-gradient-1: var(--gold-5);
   --border-gradient-2: var(--gold-4);
   --border-gradient-3: var(--gold-5);
-  --metal-gradient: linear-gradient(var(--gold-5), var(--gold-4));
+  --metal-gradient: linear-gradient(45deg, var(--gold-3), var(--gold-4));
   --radiant-gradient: linear-gradient(45deg, var(--blue-4), var(--blue-2), var(--blue-5));
 
   background-color: var(--bg-color-1);

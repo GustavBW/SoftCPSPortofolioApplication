@@ -16,9 +16,6 @@
     margin: 0;
     padding: 0;
 }
-.ChampThumbnail:hover {
-    filter: drop-shadow(0 0 0.5rem white);
-}
 
 .frame{
     width: 100%;
