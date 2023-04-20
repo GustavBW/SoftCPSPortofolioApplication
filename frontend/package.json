@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/recharts": "^1.8.24",
     "levenshtein-edit-distance": "^3.0.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "recharts": "^2.5.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

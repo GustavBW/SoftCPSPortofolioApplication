@@ -59,6 +59,10 @@
   --grey-4: #2A2A2E;
   --grey-5: #1E2328;
   --grey-6: #010A13;
+
+  --red-1: #ff5252; /*not style guide specified*/
+  --red-2: #ff0000;
+  --red-3: #900000;
   
   --bg-color-1: var(--blue-6);
 

@@ -63,7 +63,7 @@
     width: 4%;
     height: 20%;
     opacity: 1;
-    background-color: var(--gold-5);
+    background-color: white;
     transition: all .01s;
     transition-delay: 2s;
     transform: rotate(-45deg);
