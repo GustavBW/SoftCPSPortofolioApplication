@@ -29,9 +29,17 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
         left: (fieldIndex.x + center.x) + "px"
     });
     const [hover, setHover] = React.useState(false);
-    const zIndex = ((champion.id / 1000) -2) + "";
+    const zIndex = ((champion.id / 1000) - 2) + ""; //solving z fighting issues
 
     const updatePositioning = () => {
+        /**
+        let cmVec = { x: center.x - mouse.x, y: center.y - mouse.y };
+        const cmDistSq = cmVec.x * cmVec.x + cmVec.y * cmVec.y;
+
+        if(cmDistSq < 100 * 100){
+            cmVec = { x: 0, y: 0 };
+        }
+        */
         setStyle({
             width: width + "px",
             height: height + "px",
@@ -45,14 +53,14 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
     },[center, fieldIndex, width, mouse]);
 
     return (
-        <button className="ChampThumbnail" 
+        <div className="ChampThumbnail" 
             style={{ ...style, zIndex: zIndex + "", transitionDelay: (((1 - (1 / champion.champion_key)) * 5) + 1) + ""}} 
-            onClick={e=>setSelectedChampion(champion)} 
             onMouseOver={e => {setHover(true); setAnchorType(AnchorTypes.Grabber)}} 
             onMouseLeave={e => {setHover(false); setAnchorType(AnchorTypes.Movement)}}
             aria-label={champion.name}
             >
             {hover ? <h1 className="name-tag">{champion.name}</h1> : <></>}
+            <button className="select-button" onClick={e=>setSelectedChampion(champion)}/>
             <svg viewBox={`0 0 8.2 14.2`} className="frame">
                 <defs>
                     <clipPath id="hexagon">
@@ -76,6 +84,6 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
                 <path d={path} stroke={"url(#border-gradient-" + champion.champion_key+")"} strokeWidth="0.2" fill="none" />
                 <path d={path} fill={"url(#gradient-" + champion.champion_key+")"} className={hover ? "" : "hidden"} />
             </svg>
-        </button>
+        </div>
     );
 }

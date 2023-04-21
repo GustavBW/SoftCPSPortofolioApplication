@@ -7,6 +7,7 @@ import { Champion } from './ts/types'
 import { championFilters } from './ts/filters'
 import HealthMonitor from './components/healthMonitor/HealthMonitor'
 import ChampionView from './components/champion/championView/ChampionView'
+import ErrorBoundary from './components/error/ErrorBoundary'
 
 function App() {
   const [center, setCenter] = useState({ x: 0, y: 0 }); // in pixels
@@ -68,6 +69,7 @@ function App() {
         searchTerm={searchTerm} 
         setAnchorType={setAnchorType} 
       />
+
       <img className="background" loading="lazy" src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/lcu-article-backdrop.jpg" alt="background" />
     </div>
   )

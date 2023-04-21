@@ -48,8 +48,10 @@ export async function getLatestFetchTimeData(entries: number): Promise<FetchTime
                 timestamp: new Date(item.timestamp)
             }
         });
-    return parsedData;
+        return parsedData;
     } catch (e) {
+        console.log(e);
         return null;
     }
+
 }

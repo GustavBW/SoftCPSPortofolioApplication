@@ -5,7 +5,7 @@ import ChampThumbnail from '../champion/ChampThumbnail';
 import './ChampField.css';
 import iterateField, { FieldIndex, FieldIteratorState } from '../../ts/fieldGenerationIterator';
 import { SearchFilter } from '../../ts/filters';
-import {levenshteinSort2} from '../../ts/levenshtein';
+import levenshteinSort from '../../ts/levenshtein';
 import Spinner from '../loadingSpinner/Spinner';
 import { AnchorTypes } from '../movement/MovementAnchor';
 
@@ -40,6 +40,7 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
     const [fieldIndicies, setFieldIndicies] = React.useState<FieldIndex[]>([]);
     const [tileWidth, setTileWidth] = React.useState<number>(2 * center.x * tileWidthPercent * 1.1);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
+    const [error, setError] = React.useState<boolean>(false);
 
     const updateChampionIndicies = (champs: Champion[]) => {
         const width = 2 * center.x * tileWidthPercent * 1.1;
@@ -68,19 +69,17 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
             updateChampionIndicies(champs);
             setChampions(champs);
             setIsLoading(false);
+        }).catch(err => {
+            setError(true);
+            console.log("Unable to gather champion data.")
         });
     }, []);
 
     useEffect(() => {
-        //Do NOT sort the champions - sort the indicies for animation
-        const timeA = performance.now();
         //theres no excuse to bad search fields when levenshtein exists - and is very fast
-        setFieldIndicies(levenshteinSort2<FieldIndex,Champion>(fieldIndicies, filterOn, searchTerm.toLowerCase(), champions));
-        const timeB = performance.now();
-        console.log(`sorting took ${timeB - timeA} ms`);
-    }, [searchTerm, filterOn, champions]);
+        setChampions(levenshteinSort(champions, filterOn, searchTerm.toLowerCase()));
+    }, [searchTerm]);
 
-    //See GenerationStrategies for more info
     useEffect(() => {
         updateChampionIndicies(champions);
     }, [champions]);
