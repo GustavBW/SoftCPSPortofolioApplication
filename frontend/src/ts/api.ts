@@ -37,8 +37,21 @@ export async function getNewestRotation(): Promise<any> {
     return data;
 }
 
-export async function getLatestFetchTimeData(entries: number): Promise<FetchTimeData[]> {
-    const response = await fetch(`${serverUrl}${apiRoot}/cache/fetchtimes?entries=${entries}`, { headers: headers });
-    const data = await response.json();
-    return data;
+export async function getLatestFetchTimeData(entries: number): Promise<FetchTimeData[] | null> {
+    try{
+        const response = await fetch(`${serverUrl}${apiRoot}/cache/fetchtimes?entries=${entries}`, { headers: headers });
+        const data = await response.json();
+        const parsedData = data.map((item: any) => {
+            return { //some manual assistance is needed here since the date format is not standard
+                id: item.id,
+                fetch_time_ms: item.fetch_time_ms,
+                timestamp: new Date(item.timestamp)
+            }
+        });
+        return parsedData;
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
+
 }

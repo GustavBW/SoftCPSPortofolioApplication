@@ -43,6 +43,14 @@ const textPaths = [
     "M 1 -6 L 1 6 L -1 6 L -1 -6 Z", 
     "M 0 -8 L 2 -6 L 2 6 L 0 8 L -2 6 L -2 -6 Z"
 ];
+const handPaths = [
+    "M 0 0 Z", //safe empty paths
+    "M 0 0 Z",
+    "M 0 0 Z",
+    "M 15 14 L 7.5 12.5 L 2.5 7.5 C -0.5 6.5 1.5 5 2.5 5.5 C 3.5 6 4.5 5.5 3.5 4.5 L -3.5 -2.5 C -4.5 -3.5 -3.5 -4.5 -2.5 -3.5 L 1.5 0.5 C 2.5 1.5 3.5 0.5 2.5 -0.5 L 2 -1 C 1 -2 2.5 -2.5 3.5 -1.5 L 4.5 -0.5 C 5.5 0.5 6.5 -0.5 5.5 -1.5 L 5.5 -1.5 C 5 -2 5.5 -3.5 7.5 -1.5 L 7.5 -1.5 C 8 -1 9 -0.5 8.5 -2 L 8.5 -2 C 8 -4 10.5 -2.5 11.5 -1.5 L 16 3.5 L 18 11 Z",
+    "M -4 -2 C -6 -4 -4 -6 -2 -4 L 2 0 C 0 -2 2 -4 5 -1 C 3.5 -3 6 -4 8 -2 C 7 -4 10 -4 12 -2 L 17 3 L 19 11 L 15 15 L 7 13 L 2 8 C -1 7 0 4 3 5 L -2 0 Z"
+
+]
 
 export default function MovementAnchor({ center, mouse, type }: MovementAnchorProps) {
     const [x, setX] = React.useState(mouse.x);
@@ -66,6 +74,9 @@ export default function MovementAnchor({ center, mouse, type }: MovementAnchorPr
                 break;
             case AnchorTypes.Text:
                 setPaths(textPaths);
+                break;
+            case AnchorTypes.Hand:
+                setPaths(handPaths);
                 break;
         }
     },[type])

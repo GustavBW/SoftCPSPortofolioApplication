@@ -14,26 +14,26 @@ export default function FilterSelect({ setFilterType, setAnchorType }: FiltersPr
     const [showFilters, setShowFilters] = React.useState(false);
     const [hover, setHover] = React.useState(false);
 
+    const getButtonStyle = () => {
+        if(hover || showFilters){
+            return { filter: "drop-shadow(0 0 .5rem white)", borderRadius: "0" };
+        }
+        return {};
+    }
+
+    const getMenuStyle = () => {
+        if (hover || showFilters) {
+            return { height: "100%" };
+        }
+        return { height: "0", margin: "0", padding: "0", bottom: "-5rem" };
+    }
+
     return (
-        <div className="FilterSelect">
-            <div className="filter-menu"
-                style={showFilters || hover ? { width: "300%", right: "-10rem", display: "flex" } : { width: "0", display: "none" }}
-                onMouseEnter={e => {setShowFilters(true); setHover(true); setAnchorType(AnchorTypes.Mouse)}}
-                onMouseLeave={e => { setShowFilters(false); setHover(false)}}
+        <div className="FilterSelect" 
             >
-                {championFilters.map((filter, i) => {
-                    return (
-                        <button key={i} className="filter-menu-item" onClick={e => {
-                            setFilterType(filter);
-                            setShowFilters(false);
-                            setHover(false);
-                        }}>
-                            {filter.displayName}
-                        </button>
-                    );
-                })}
-            </div>
             <button  className="filter-button"
+                style={getButtonStyle()}
+                
                 onMouseEnter={e=>setHover(true)} 
                 onMouseLeave={e=>setHover(false)}
                 > 
@@ -41,10 +41,28 @@ export default function FilterSelect({ setFilterType, setAnchorType }: FiltersPr
                     viewBox="-0.1 -0.1 17.2 12.2" width="100%" height="100%"
                     style={hover || showFilters ? {transform: "rotate(270deg)"} : {}}
                     >
-                    <path d={path} fill="var(--blue-6)" />
+                    <path d={path} fill="white" />
                 </svg>
             </button>
-
+            <div className="filter-menu"
+                style={getMenuStyle()}
+                onMouseEnter={e => { setShowFilters(true); setHover(true); setAnchorType(AnchorTypes.Mouse) }}
+                onMouseLeave={e => { setShowFilters(false); setHover(false) }}
+            >
+                {championFilters.map((filter, i) => {
+                    return (
+                        <button key={i} className="filter-menu-item" onClick={e => {
+                            setFilterType(filter);
+                            setShowFilters(false);
+                            setHover(false);
+                        }}
+                        style={getMenuStyle()}
+                        >
+                            {filter.displayName}
+                        </button>
+                    );
+                })}
+            </div>
         </div>
     );
 }

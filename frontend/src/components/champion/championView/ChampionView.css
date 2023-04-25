@@ -1,0 +1,184 @@
+.ChampionView{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: 97;
+
+    --width: 66%;
+
+    width: var(--width);
+    left: calc((100% - var(--width)) / 2);
+    top: 0%;
+    height: 70%;
+
+    padding: 0;
+    margin: 0;
+
+    background-color: transparent;
+    overflow: visible;
+
+    filter: drop-shadow(0 0 5rem black);
+    transition: all 0.5s ease-in-out;
+}
+
+.stat-crystals{
+    position: absolute;
+    display: block;
+    z-index: 105;
+    overflow: visible;
+}
+
+.atk-crystal,.def-crystal,.mag-crystal,.dif-crystal{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    text-align: center;
+    width: 5rem;
+    height: 5rem;
+    color: var(--gold-4);
+    margin: 0;
+    padding: 0;
+    --shadow-width: 0.5rem;
+    border-radius: 100%;
+}
+.atk-crystal{
+    top: -17.9rem;
+    left: -29.3rem;
+    filter: drop-shadow(0 0 var(--shadow-width) var(--red-3));
+    background-color: red;
+}
+.def-crystal{
+    top: -17.9rem;
+    left: 24.3rem;
+    filter: drop-shadow(0 0 var(--shadow-width) var(--grey-3));
+    background-color: silver;
+}
+.mag-crystal{
+    top: 8.9rem;
+    left: -26rem;
+    filter: drop-shadow(0 0 var(--shadow-width) var(--blue-4));
+    background-color: blue;
+}
+.dif-crystal{
+    top: 8.9rem;
+    left: 21rem;
+    filter: drop-shadow(0 0 var(--shadow-width) orange);
+    background-color: gold;
+}
+
+.cw-frame{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: 98;
+    top: 51%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding:0;
+    margin:0;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 130%;
+    height: 110%;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.portrait{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: 98;
+    opacity: 1;
+    margin:0;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease-in-out;
+}
+
+
+.cw-content{
+    position:relative;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.lore {
+    position: relative;
+    bottom: 1rem;
+    z-index: 100;
+    width: 50%;
+    background-color: transparent;
+    transition: all 0.5s ease-in-out;
+}
+
+.close-button{
+    position: relative;
+    bottom: 0;
+    right: -.4rem;
+    z-index: 101;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    margin: 0;
+    font-size: 1.5rem;
+    border: 0;
+    background-color: transparent;
+    transform: rotate(180deg);
+    transition: all 0.5s ease-in-out;
+}
+
+.name-and-title{
+    position: relative;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 20%;
+    margin-bottom: 24.75rem;
+    padding-bottom: 1rem;
+    background-color: transparent;
+    transition: all 0.5s ease-in-out;
+    filter: drop-shadow(0 0 5rem black);
+}
+h2{
+    margin: 0;
+    padding: 0;
+}
+h1 {
+    margin: 0;
+    padding: 0;
+    padding-top: .5rem;
+}
+
+.close.button{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 101;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background-color: transparent;
+    transition: all 0.5s ease-in-out;
+}
+

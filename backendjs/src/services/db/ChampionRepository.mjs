@@ -12,7 +12,10 @@ export const getChampionByKey = async (connection, key, callback) => {
  * @returns { imageUrl, thumbnailUrl }
  */
 const deriveImageUrls = (champion) => {
-    const champImgName = champion.image.full.split('.')[0];
+    let champImgName = champion.image.full.split('.')[0];
+    if(champImgName == "Fiddlesticks"){
+        champImgName = "FiddleSticks"; //why riot. why.
+    }
     const imageUrl = riotConfig.routeForSplashArt.url + champImgName + "_0.jpg";
     const thumbnailUrl = riotConfig.routeForChampionIcon.url + champImgName + "_0.jpg";
     return { imageUrl, thumbnailUrl };

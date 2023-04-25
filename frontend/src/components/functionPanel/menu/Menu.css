@@ -27,9 +27,9 @@
     height: 50%;
     font-size: 250%;
     font-weight: bold;
-    color: var(--blue-6);
-    background-image: var(--metal-gradient);
+    background-image: var(--radiant-gradient);
+
+    border: .3rem solid var(--gold-4);
     border-radius: 100%;
-    box-sizing: border-box;
-    border: none;
+
 }
