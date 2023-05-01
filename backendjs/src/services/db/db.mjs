@@ -5,6 +5,7 @@ import { insertOrUpdateRotation } from './RotationsRepository.mjs';
 import {getAbilityByChampionAndName} from './ChampionAbilitiesRepository.mjs';
 import { insertOrUpdateSkin } from './ChampSkinsRepository.mjs';
 import { insertOrUpdateAbility } from './ChampionAbilitiesRepository.mjs';
+import {insertOrUpdateSummoner} from '/repositories/SummonerRepository.mjs';
 import config from '../../../env.json' assert { type: "json" };
 import { insertFetchTimeNow } from './BackendStatsRepository.mjs';
 
@@ -95,6 +96,24 @@ const db = {
      */
     loadRotation: async (data) => {
         await insertOrUpdateRotation(connection, await data);
+    },
+    loadSummoner: async (data) => {
+        await insertOrUpdateSummoner(connection, await data);
+    },
+    /**
+     * Does not, in fact, give all 1.8 million player accounts - but merily the first 50 challengers.
+     */
+    getAllSummoners: async () => {
+        const result = new Promise((resolve, reject) => {
+            connection.query('SELECT * FROM summoners', (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+        return result;
     },
     /**
      * @param {int[]} keyValues - the champion_keys of the champions to get

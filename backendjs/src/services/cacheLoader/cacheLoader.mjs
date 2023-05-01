@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import db from '../db/db.mjs';
 import config from '../../../env.json' assert { type: "json" };
+import { updateHighestRankedPlayers } from './playerLoader.mjs';
 const appConfig = config.appConfig;
 const riotConfig = config.riotConfig;
 
@@ -48,7 +49,9 @@ const doLoadCycle = async () => {
     });
     */
 
-    await Promise.all([rotationPromise, championsPromise
+    const rankedPromise = await updateHighestRankedPlayers();
+
+    await Promise.all([rotationPromise, championsPromise, rankedPromise
     //     , championsDetailsPromise
     ])
     .then(() => {
