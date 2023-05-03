@@ -1,6 +1,4 @@
-
-
-
+//Takes care of all the database queries for the backend health page
 
 export const insertFetchTimeNow = async (connection, fetchTimeMs) => {
     try {

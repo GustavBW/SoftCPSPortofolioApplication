@@ -1,25 +1,32 @@
+// Takes care of loading players (summoners), their accounts, icons etc...
+
 import config from '../../../env.json' assert { type: "json" };
-import { loadSummoner } from '../db.mjs';
+import db from '../db/db.mjs';
+import fetch from 'node-fetch';
 
 const appConfig = config.appConfig;
 const riotConfig = config.riotConfig;
 
+/**
+ * Appends additional information to a summonerDTO object.
+ * @param {summonerDTO[]} summonerListPromise 
+ */
 export const forEachAppendInfo = async (summonerListPromise) => {
 
     const summonerList = await summonerListPromise;
 
     for(let i = 0; i < summonerList.length; i++) {
-        setTimeout(() => {
+        setTimeout(() => { //delay to avoid rate limit
             const summoner = summonerList[i];
 
-            fetch(riotConfig.routeForSummonerInfo, {
+            fetch(riotConfig.routeForSummonerInfo.url, {
                 mode: 'no-cors',
                 headers: riotConfig.routeForSummonerInfo.public ? {} : riotConfig.authHeader
                 }).then((res) => {
                     res.json().then((json) => {
                         summoner.iconURL = json.profileIconId;
                         summoner.level = json.summonerLevel;
-                        loadSummoner(summoner);
+                        db.loadSummoner(summoner);
                     });
                 });
 

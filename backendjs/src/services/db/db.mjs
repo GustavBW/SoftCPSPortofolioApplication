@@ -1,43 +1,49 @@
+//Takes care of the db connection and the different repositories.
+
 import mysql from 'mysql';
 import { create, useDB, getMaxOfN } from './dbUtil.mjs';
-import { insertOrUpdateChampion, getChampionByKey } from './ChampionRepository.mjs';
-import { insertOrUpdateRotation } from './RotationsRepository.mjs';
-import {getAbilityByChampionAndName} from './ChampionAbilitiesRepository.mjs';
-import { insertOrUpdateSkin } from './ChampSkinsRepository.mjs';
-import { insertOrUpdateAbility } from './ChampionAbilitiesRepository.mjs';
-import {insertOrUpdateSummoner} from '/repositories/SummonerRepository.mjs';
+import { insertOrUpdateChampion, getChampionByKey } from './repositories/ChampionRepository.mjs';
+import { getRotationForToday, insertOrUpdateRotation } from './repositories/RotationsRepository.mjs';
+import { getAbilityByChampionAndName } from './repositories/ChampionAbilitiesRepository.mjs';
+import { insertOrUpdateSkin } from './repositories/ChampSkinsRepository.mjs';
+import { insertOrUpdateAbility } from './repositories/ChampionAbilitiesRepository.mjs';
+import { insertOrUpdateSummoner } from './repositories/SummonerRepository.mjs';
 import config from '../../../env.json' assert { type: "json" };
-import { insertFetchTimeNow } from './BackendStatsRepository.mjs';
+import { insertFetchTimeNow } from './repositories/BackendStatsRepository.mjs';
 
 const dbConfig = config.dbConfig;
 
-//Defaulting to no database as it is taken down and reestablished as the first step of create()
-const connection = mysql.createConnection({...dbConfig, database: ""});
-connection.connect((error) => {
-    if (error) {
-        console.error('Error connecting to MySQL:', error);
-        return;
-    }
-    console.log('Connected to MySQL as ID:', connection.threadId);
-    create(connection).then(()=> {
-        useDB(connection).then(() => {
-            connection.query('SHOW TABLES', (err, results) => {
-                if (err) {
-                    console.log('Error getting table names');
-                    console.log(err);
-                    throw err;
-                }
+let connection = null;
 
-                console.log('Tables in database:');
-                results.forEach((result) => {
-                    console.log("\t"+result['Tables_in_' + dbConfig.database]);
+export const initializeDB = async () => {
+    //Defaulting to no database as it is taken down and reestablished as the first step of create()
+    connection = mysql.createConnection({...dbConfig, database: ""});
+    connection.connect((error) => {
+        if (error) {
+            console.error('Error connecting to MySQL:', error);
+            return;
+        }
+        console.log('Connected to MySQL as ID:', connection.threadId);
+        create(connection).then(()=> {
+            //selecting the db again as the create function sometimes doesnt reselect the sls db correctly
+            useDB(connection).then(() => {
+                connection.query('SHOW TABLES', (err, results) => {
+                    if (err) {
+                        console.log('Error getting table names');
+                        console.log(err);
+                        throw err;
+                    }
+
+                    console.log('Tables in database:');
+                    results.forEach((result) => {
+                        console.log("\t"+result['Tables_in_' + dbConfig.database]);
+                    });
                 });
             });
+            
         });
-        
-    });
-
-})
+    })
+}
 
 /**
  * Unified access to the database
@@ -91,14 +97,17 @@ const db = {
         });
     },
     /**
-     * Inserts a single rotation json object into the correct columns in the db
+     * Inserts or updates a single rotation json object into the correct columns in the db
      * @param {rotation json} data
      */
     loadRotation: async (data) => {
         await insertOrUpdateRotation(connection, await data);
     },
+    /**
+     * Inserts or updates a single summoner json object into the correct columns in the db
+     */
     loadSummoner: async (data) => {
-        await insertOrUpdateSummoner(connection, await data);
+        // await insertOrUpdateSummoner(connection, await data);
     },
     /**
      * Does not, in fact, give all 1.8 million player accounts - but merily the first 50 challengers.
@@ -163,7 +172,7 @@ const db = {
      */
     getChampionStats: async (key) => {
         const result = new Promise((resolve, reject) => {
-            getStatsForChampion(connection, key, (err, results) => {
+            connection.query("SELECT * FROM champion_stats WHERE champion_key = ?", [key], (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -173,9 +182,13 @@ const db = {
         });
         return result;
     },
+    /**
+     * @param {int} key - the champion_key of the champion to get abilities for
+     * @returns the abilities for said champion
+     */
     getChampionAbilities: async (key) => {
         const result = new Promise((resolve, reject) => {
-            connection.query('SELECT * FROM abilities WHERE champion_key = ?', [key], (err, results) => {
+            connection.query('SELECT * FROM champion_abilities WHERE champion_key = ?', [key], (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -185,6 +198,27 @@ const db = {
         });
         return result;
     },
+    /**
+     * Retrieves all skins for a given champion by key
+     * @param {int} key 
+     */
+    getChampionSkins: async (key) => {
+        const result = new Promise((resolve, reject) => {
+            connection.query('SELECT * FROM champion_skins WHERE champion_key = ?', [key], (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+        return result;
+    },
+    /**
+     * @param {int} key - the champion_key of the champion to get the specified ability for
+     * @param {string} name - the name of the ability to get
+     * @returns any data concerning said ability
+     */
     getAbilityByKeyAndName: async (key, name) => {
         const result = new Promise((resolve, reject) => {
             getAbilityByChampionAndName(connection, key, name, (err, results) => {
@@ -197,9 +231,13 @@ const db = {
         });
         return result;
     },
+    /**
+     * Retrieves the current champion rotation
+     * @returns the current champion rotation
+     */
     getNewestRotation: async () => {
         const result = new Promise((resolve, reject) => {
-            getMaxOfN(connection, 'rotations', 'id', (err, results) => {
+            getRotationForToday(connection, (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -209,6 +247,9 @@ const db = {
         });
         return result;
     },
+    /**
+     * Retrieves the newest champion
+     */
     getNewestChampion: async () => {
         const result = new Promise((resolve, reject) => {
             getMaxOfN(connection, 'champions', 'champion_key', (err, results) => {

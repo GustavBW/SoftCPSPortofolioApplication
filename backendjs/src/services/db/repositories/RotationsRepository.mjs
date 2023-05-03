@@ -1,3 +1,5 @@
+//Takes care of storing, retrieving and updating champion rotation data.
+
 const simplifiedDate = ()=>{
     const now = new Date();
     const year = now.getFullYear();
@@ -6,10 +8,23 @@ const simplifiedDate = ()=>{
     return `${year}-${month}-${day}`;
 }
 
+const getBaseValues = (rotation) => {
+    return [
+        JSON.stringify(rotation.freeChampionIds),
+        JSON.stringify(rotation.freeChampionIdsForNewPlayers),
+        rotation.maxNewPlayerLevel,
+        simplifiedDate()
+    ];
+}
+
+/**
+ * Inserts new rotation
+ * @param {db connection} connection 
+ * @param {any} json 
+ */
 export const insertRotation = async (connection, json) => {
     try {
-        const values = [JSON.stringify(json.freeChampionIds), JSON.stringify(json.freeChampionIdsForNewPlayers), json.maxNewPlayerLevel, simplifiedDate()];
-        await connection.query(insertRotationQuery, values);
+        await connection.query(insertRotationQuery, getBaseValues(json));
         console.log('Rotation added to the table.');
     } catch (err) {
         console.log('Error inserting rotation');
@@ -18,10 +33,15 @@ export const insertRotation = async (connection, json) => {
     }
 }
 
+/**
+ * Updates existing rotation
+ * @param {db connection} connection
+ * @param {any} json
+ * @param {number} id
+ */
 export const updateRotation = async (connection, json, id) => {
     try {
-        const values = [JSON.stringify(json.freeChampionIds), JSON.stringify(json.freeChampionIdsForNewPlayers), json.maxNewPlayerLevel,simplifiedDate()];
-        await connection.query(insertRotationQuery, values);
+        await connection.query(insertRotationQuery, getBaseValues(json));
         console.log('Rotation added to the table.');
     } catch (err) {
         console.log('Error inserting rotation');
@@ -30,32 +50,26 @@ export const updateRotation = async (connection, json, id) => {
     }
 }
 
-export const getRotationForToday = async (connection) => {
+/**
+ * Gets the current rotation
+ * @param {db connection} connection
+ * @description Gets rotation for today
+ */
+export const getRotationForToday = async (connection, callback) => {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
     const day = now.getDate();
   
     const query = `SELECT * FROM rotations WHERE latestUpdate = '${year}-${month}-${day}'`;
-    return new Promise((resolve, reject) => {
-      connection.query(query, (err, result) => {
-        if (err) {
-          console.log('Error getting rotation for today');
-          console.log(err);
-          reject(err);
-          return;
-        }
-        resolve(result);
-      });
-    });
-  };
+    connection.query(query, callback);
+}
 
 /**
  * Inserts new rotation if no rotation exists for this date, otherwise updates existing rotation
  * @param {db connection} connection 
  * @param {rotation json} json 
  */
-
 export const insertOrUpdateRotation = async (connection, json) => {
     try {
         const existingEntry = await getRotationForToday(connection, (err, result) => {

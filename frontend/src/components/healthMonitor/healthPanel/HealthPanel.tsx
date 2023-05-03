@@ -66,7 +66,6 @@ export default function HealthPanel({ onDeselect, style, setAnchorType, onError,
                     <div className="input-label-pair" onMouseEnter={e => setAnchorType(AnchorTypes.Text)} onMouseLeave={e => setAnchorType(AnchorTypes.Mouse)}>
                         <label htmlFor="polling-rate" className="fetch-time-label" title="How often to refresh data">Polling Rate ?</label>
                         <input name="polling-rate" className="polling-rate-input" type="number" value={pollingRate} onChange={e=>setPollingRate(parseInt(e.target.value))} />
-                       
                     </div>
                 </div>
             </div>

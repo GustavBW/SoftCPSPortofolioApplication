@@ -1,3 +1,5 @@
+//Takes care of formating, storing and retrieving summoners.
+
 const getBaseValues = (summoner) => {
     return [
         summoner.name,
@@ -9,9 +11,9 @@ const getBaseValues = (summoner) => {
     ];
 }
 
-export const insertOrUpdateSummoner = async (summoner, connection) => {
+export const insertOrUpdateSummoner = async (connection, summoner) => {
     const result = new Promise((resolve, reject) => {
-        connection.query(insertSummonerQuery, getBaseValues(summoner), (err, results) => {
+        connection.query(insertSummonerQuery, [...getBaseValues(summoner)], (err, results) => {
             if (err) {
                 reject(err);
             } else {
@@ -23,7 +25,7 @@ export const insertOrUpdateSummoner = async (summoner, connection) => {
 }
 
 export const insertSummonerQuery = `
-    INSERT INTO summoner (
+    INSERT INTO summoners (
         name,
         leaguePoints,
         wins,
@@ -41,7 +43,7 @@ export const insertSummonerQuery = `
 
 
 export const createSummonerTableQuery = `
-    CREATE TABLE IF NOT EXISTS summoner (
+    CREATE TABLE IF NOT EXISTS summoners (
         name VARCHAR(150) NOT NULL UNIQUE,
         leaguePoints INT NOT NULL,
         wins INT NOT NULL,

@@ -1,9 +1,8 @@
-import config from './env.json' assert { type: "json" };
-import db from './src/services/db/db.mjs';
+import config from '../../env.json' assert { type: "json" };
+import db from '../services/db/db.mjs';
 import cors from 'cors';
 
 const apiRoot = config.appConfig.apiRoot;
-
 
 export const initializeApi = (server) => {
     server.use(cors());

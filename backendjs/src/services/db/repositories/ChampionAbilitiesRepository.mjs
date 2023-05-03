@@ -1,3 +1,4 @@
+// Takes care of formating, storing and retrieving champion ability data
 
 /**
  * Flattens the nested description objects in the effects array into a string array
@@ -44,9 +45,16 @@ const getBaseValues = (abilityJson) => {
     ]
 }
 
+/**
+ * Inserts an ability into the db
+ * @param {db connection} connection 
+ * @param {any} abilityJson 
+ * @param {number} championKey 
+ */
 export const insertAbility = async (connection, abilityJson, championKey) => {
     try {
-        connection.query(insertAbilityQuery, [championKey, ...getBaseValues(abilityJson)], (err, result) => {
+        const baseValues = getBaseValues(abilityJson);
+        connection.query(insertAbilityQuery, [championKey, ...baseValues], (err, result) => {
             if (err) {
                 console.log('Error inserting ability');
                 console.log(err);
@@ -59,6 +67,12 @@ export const insertAbility = async (connection, abilityJson, championKey) => {
     }
 }
 
+/**
+ * Updates an ability into the db
+ * @param {db connection} connection 
+ * @param {any} abilityJson 
+ * @param {number} championKey 
+ */
 export const updateAbility = async (connection, abilityJson, championKey) => {
     try {
         connection.query(updateAbilityQuery, [...getBaseValues(abilityJson), championKey, abilityJson.name], (err, result) => {
@@ -74,13 +88,17 @@ export const updateAbility = async (connection, abilityJson, championKey) => {
     }
 }
 
-
+/**
+ * Retrieves a specific ability from the database
+ * @param {db connection} connection 
+ * @param {string} abilityName 
+ * @param {number} championKey 
+ */
 export const getAbilityByChampionAndName = async (connection, championKey, abilityName, callback) => {
     connection.query("SELECT * FROM abilities WHERE champion_key = ? AND name = ?", [championKey, abilityName], (err, result) => {
         callback(err, result);
     });
 }
-  
 
 /**
  * Inserts or updates ability data for a champion
@@ -112,7 +130,7 @@ export const insertOrUpdateAbility = async (connection, abilityData, championKey
 
 
 
-export const createAbilitiesTableQuery = `CREATE TABLE IF NOT EXISTS abilities (
+export const createAbilitiesTableQuery = `CREATE TABLE IF NOT EXISTS champion_abilities (
     id INT(11) NOT NULL AUTO_INCREMENT,
     champion_key VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -145,7 +163,7 @@ export const createAbilitiesTableQuery = `CREATE TABLE IF NOT EXISTS abilities (
 )`;
 
 const updateAbilityQuery = `
-    UPDATE abilities 
+    UPDATE champion_abilities 
     SET
         name = ?,
         icon = ?,
@@ -177,7 +195,7 @@ const updateAbilityQuery = `
 `;
 
 const insertAbilityQuery = `
-    INSERT INTO abilities (
+    INSERT INTO champion_abilities (
         champion_key,
         name,
         icon,

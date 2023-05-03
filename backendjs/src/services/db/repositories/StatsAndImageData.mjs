@@ -1,9 +1,12 @@
+//Takes care of formating, storing and retrieving champion stats.
+
 export const getStatsForChampion = async (connection, key, callback) => {
     connection.query("SELECT * FROM champion_stats WHERE champion_key = ?", [key], (err, result) => callback(err,result));
 }
 
 
 /**
+ * Either updates existing stats or inserts new stats for given champion data.
  * @param {db connection} connection 
  * @param {champion data} data 
  * @param {boolean?} isUpdate 
@@ -34,11 +37,6 @@ export const appendStatsAndImage = async (connection, data, isUpdate) => {
         await connection.query(insertChampionStatsQuery, stats);
     }
 }
-
-
-
-
-
 
 const insertChampionImageDataQuery = `INSERT INTO champion_image_data (image_full, image_sprite, image_group, image_x, image_y, image_w, image_h, champion_key)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;

@@ -1,3 +1,5 @@
+//Takes care of formating, storing and retrieving champion skin data.
+
 /**
  * Returns a value array (without champion_key) for the skin table
  * @param {skin json} skinData 
@@ -39,7 +41,7 @@ const getBaseValuesOfSkin = (skinData) => {
  * @param {(res, err) => {}} callback 
  */
 export const getSkinByChampionAndName = async (connection, champion, skinName, callback) => {
-    const query = `SELECT * FROM skins WHERE champion_key = ? AND name = ?`;
+    const query = `SELECT * FROM champion_skins WHERE champion_key = ? AND name = ?`;
     connection.query(query, [champion, skinName], (err, result) => callback(err, result));
 }
 
@@ -79,7 +81,7 @@ export const insertOrUpdateSkin = async (connection, skinData, championKey) => {
     }
 }
 
-export const createSkinsTableQuery = `CREATE TABLE IF NOT EXISTS skins (
+export const createSkinsTableQuery = `CREATE TABLE IF NOT EXISTS champion_skins (
     champion_key VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     id INT NOT NULL,
@@ -107,11 +109,11 @@ export const createSkinsTableQuery = `CREATE TABLE IF NOT EXISTS skins (
     PRIMARY KEY (id)
     )`;
 
-const insertSkinQuery = `INSERT INTO skins (champion_key, name, id, isBase, availability, formatName, lootEligible, cost, sale, 
+const insertSkinQuery = `INSERT INTO champion_skins (champion_key, name, id, isBase, availability, formatName, lootEligible, cost, sale, 
     distribution, rarity, lore, releaseDate, skinLine, splashPath, uncenteredSplashPath, tilePath, newEffects, newAnimations, 
     newRecall, newVoice, newQuotes, voiceActor, splashArtist)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-const updateSkinQuery = `UPDATE skins SET champion_key = ?, name = ?, id = ?, isBase = ?, availability = ?, formatName = ?, lootEligible = ?, cost = ?, sale = ?, distribution = ?, rarity = ?, lore = ?, releaseDate = ?, skinLine = ?, splashPath = ?, uncenteredSplashPath = ?, tilePath = ?, newEffects = ?,
+const updateSkinQuery = `UPDATE champion_skins SET champion_key = ?, name = ?, id = ?, isBase = ?, availability = ?, formatName = ?, lootEligible = ?, cost = ?, sale = ?, distribution = ?, rarity = ?, lore = ?, releaseDate = ?, skinLine = ?, splashPath = ?, uncenteredSplashPath = ?, tilePath = ?, newEffects = ?,
     newAnimations = ?, newRecall = ?, newVoice = ?, newQuotes = ?, voiceActor = ?, splashArtist = ? 
     WHERE champion_key = ? AND name = ?`;
 

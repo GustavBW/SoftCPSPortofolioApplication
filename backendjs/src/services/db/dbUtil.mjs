@@ -1,19 +1,22 @@
+//Utility functions like create and useDB for the main db module.
+
 import config from '../../../env.json' assert { type: "json" };
-import { createSkinsTableQuery } from './ChampSkinsRepository.mjs';
-import { createChampionsTableQuery } from './ChampionRepository.mjs';
-import { createChampionStatsTableQuery, createChampionImageDataQuery } from './StatsAndImageData.mjs';
-import { createRotationsTableQuery } from './RotationsRepository.mjs';
-import { createFetchTimesTableQuery } from './BackendStatsRepository.mjs';
-import { createAbilitiesTableQuery } from './ChampionAbilitiesRepository.mjs';
+import { createSkinsTableQuery } from './repositories/ChampSkinsRepository.mjs';
+import { createChampionsTableQuery } from './repositories/ChampionRepository.mjs';
+import { createChampionStatsTableQuery, createChampionImageDataQuery } from './repositories/StatsAndImageData.mjs';
+import { createRotationsTableQuery } from './repositories/RotationsRepository.mjs';
+import { createFetchTimesTableQuery } from './repositories/BackendStatsRepository.mjs';
+import { createAbilitiesTableQuery } from './repositories/ChampionAbilitiesRepository.mjs';
+import { createSummonerTableQuery } from './repositories/SummonerRepository.mjs';
 const dbConfig = config.dbConfig;
-const riotConfig = config.riotConfig;
+
 
 const getMaxOfNQuery = (table, column) => {
     return `SELECT * FROM ${table} WHERE ${column} = (SELECT MAX(${column}) FROM ${table})`;
 }
 
 /**
- * Drops db, then recreates to wipe all data. Then creates tables
+ * Drops db, then recreates to wipe all data. Then creates all tables
  * @param {db connection} connection 
  */
 export const create = async (connection) => {
@@ -31,6 +34,7 @@ export const create = async (connection) => {
         await connection.query(createSkinsTableQuery);
         await connection.query(createFetchTimesTableQuery);
         await connection.query(createAbilitiesTableQuery);
+        await connection.query(createSummonerTableQuery);
     } catch (err) {
         console.log('Error creating tables');
         console.log(err);
@@ -38,6 +42,10 @@ export const create = async (connection) => {
     }
 }
 
+/**
+ * Selects the database to use
+ * @param {db connection} connection 
+ */
 export const useDB = async (connection) => {
     try {
         await connection.query("USE " + dbConfig.database + ";");
@@ -47,10 +55,6 @@ export const useDB = async (connection) => {
         throw err;
     }
 }
-
-
-
-
 
 /**
  * Retrives the row which has the highest value for the given column in a given table

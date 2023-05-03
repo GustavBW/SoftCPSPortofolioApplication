@@ -1,5 +1,7 @@
+//Takes care of formating, storing and retrieving champion data
+
 import {appendStatsAndImage} from './StatsAndImageData.mjs';
-import config from '../../../env.json' assert { type: "json" };
+import config from '../../../../env.json' assert { type: "json" };
 const riotConfig = config.riotConfig;
 
 export const getChampionByKey = async (connection, key, callback) => {
@@ -14,7 +16,7 @@ export const getChampionByKey = async (connection, key, callback) => {
 const deriveImageUrls = (champion) => {
     let champImgName = champion.image.full.split('.')[0];
     if(champImgName == "Fiddlesticks"){
-        champImgName = "FiddleSticks"; //why riot. why.
+        champImgName = "FiddleSticks"; //Riot made a typo
     }
     const imageUrl = riotConfig.routeForSplashArt.url + champImgName + "_0.jpg";
     const thumbnailUrl = riotConfig.routeForChampionIcon.url + champImgName + "_0.jpg";

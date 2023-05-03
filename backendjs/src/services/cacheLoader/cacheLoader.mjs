@@ -5,19 +5,23 @@ import { updateHighestRankedPlayers } from './playerLoader.mjs';
 const appConfig = config.appConfig;
 const riotConfig = config.riotConfig;
 
-
+/**
+ * Updates the cache with the current champion rotation, champion information, and highest ranked players.
+ */
 const doLoadCycle = async () => {
     const timeA = new Date().getTime();
+
     // Get the current rotation
     const rotationPromise = await fetch(riotConfig.routeForChampionRotations.url, {
         headers: riotConfig.routeForChampionDetails.public ? {} : riotConfig.authHeader,
-        mode: 'no-cors'
+        mode: 'cors'
     }).then((res) => 
         db.loadRotation(res.json())
     ).catch((err) => {
         console.log('Error loading champion rotation');
         console.log(err);
     });
+
     //get base champion information
     const championsPromise = await fetch(riotConfig.routeForChampions.url, {
         mode: 'no-cors',
