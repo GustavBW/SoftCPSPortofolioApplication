@@ -6,5 +6,6 @@
     z-index: 1;
     overflow: visible;
     bottom: -1%;
+    color: var(--gold-1);
     transform: translate(-50%, 0);
 }

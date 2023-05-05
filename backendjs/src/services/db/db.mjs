@@ -24,7 +24,7 @@ export const initializeDB = async () => {
             return;
         }
         console.log('Connected to MySQL as ID:', connection.threadId);
-        create(connection).then(()=> {
+        create(connection).then( async ()=> {
             //selecting the db again as the create function sometimes doesnt reselect the sls db correctly
             useDB(connection).then(() => {
                 connection.query('SHOW TABLES', (err, results) => {

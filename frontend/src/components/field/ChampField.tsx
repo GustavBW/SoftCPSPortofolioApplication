@@ -8,6 +8,7 @@ import { SearchFilter } from '../../ts/filters';
 import {levenshteinSort2} from '../../ts/levelstein';
 import Spinner from '../loadingSpinner/Spinner';
 import { AnchorTypes } from '../movement/MovementAnchor';
+import levenshteinSort from '../../ts/levenshtein';
 
 interface ChampFieldProps {
     /**
@@ -72,13 +73,16 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
     }, []);
 
     useEffect(() => {
-        //Do NOT sort the champions - sort the indicies for animation
         const timeA = performance.now();
         //theres no excuse to bad search fields when levenshtein exists - and is very fast
-        setFieldIndicies(levenshteinSort2<FieldIndex,Champion>(fieldIndicies, filterOn, searchTerm.toLowerCase(), champions));
+        setChampions( 
+            //this is actually inefficient. we should be sorting the indicies, not the champions
+            //however, the unintentional staggered animation when the images are reloaded is pretty cool
+            levenshteinSort(champions, filterOn, searchTerm.toLowerCase()) 
+            );
         const timeB = performance.now();
         console.log(`sorting took ${timeB - timeA} ms`);
-    }, [searchTerm, filterOn, champions]);
+    }, [searchTerm, filterOn]);
 
     //See GenerationStrategies for more info
     useEffect(() => {

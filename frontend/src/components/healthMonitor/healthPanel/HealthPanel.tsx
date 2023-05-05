@@ -23,7 +23,6 @@ export default function HealthPanel({ onDeselect, style, setAnchorType, onError,
             getLatestFetchTimeData(entries).then(times => {
                 if(times === null) {
                     onError(true);
-                    console.log("Unable to gather fetch times - is the server running?");
                     return;
                 }
                 setFetchTimes(times);

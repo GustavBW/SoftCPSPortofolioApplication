@@ -51,6 +51,7 @@
 
 .search-input {
     position: absolute;
+    color: var(--gold-1);
 }
 
 

@@ -33,18 +33,30 @@ function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    console.log("Selected champion is: ", selectedChampion?.name ?? "None")
-    console.log("showing: ", showSelectedChampion ? "true" : "false")
+  const deselectChampion = () => {
+    setShowSelectedChampion(false);
+
+  }
+
+  const selectChampion = (champion: Champion) => {
+    setSelectedChampion(champion);
     setShowSelectedChampion(true);
-  }, [selectedChampion]);
+  }
 
   return (
     <div className="App" onMouseMove={e => setMouse({x: e.clientX, y: e.clientY})}>
+      <div className="cw-focus" 
+        style={{
+          backgroundColor : showSelectedChampion && selectedChampion !== null ? 'rgba(0,0,0,0.4)' : 'transparent',
+          pointerEvents: showSelectedChampion && selectedChampion !== null ? 'auto' : 'none',
+          backdropFilter: showSelectedChampion && selectedChampion !== null ? 'blur(5px)' : 'none',
+        }}
+        onClick={e => deselectChampion()}
+      ></div>
       <ChampionView
         champion={selectedChampion} 
         show={showSelectedChampion} 
-        onDeselect={() =>{setShowSelectedChampion(false)}} 
+        onDeselect={deselectChampion} 
         setAnchorType={setAnchorType}
       />
       <HealthMonitor 
@@ -62,7 +74,7 @@ function App() {
         type={anchorType} 
       />
       <ChampField 
-        setSelectedChampion={setSelectedChampion} 
+        setSelectedChampion={selectChampion} 
         center={center} 
         mouse={mouse} 
         filterOn={championFilter} 

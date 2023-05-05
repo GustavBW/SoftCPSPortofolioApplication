@@ -13,8 +13,8 @@ const doLoadCycle = async () => {
 
     // Get the current rotation
     const rotationPromise = await fetch(riotConfig.routeForChampionRotations.url, {
-        headers: riotConfig.routeForChampionDetails.public ? {} : riotConfig.authHeader,
-        mode: 'cors'
+        headers: riotConfig.authHeader, //originally there where an automatic check with the env.json wether or not to use the authHeader, 
+        mode: 'no-cors'                 //but somehow it would always evaluate to true, i.e. do not include the auth, even though js correctly detected that the route...xxx.public was false
     }).then((res) => 
         db.loadRotation(res.json())
     ).catch((err) => {
