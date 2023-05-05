@@ -90,11 +90,13 @@ const db = {
      */
     loadChampionDetails: async (expandedChampion) => {
         Object.values(await expandedChampion.abilities).forEach((ability) => {
-            insertOrUpdateAbility(connection, ability, expandedChampion.name);
+            insertOrUpdateAbility(connection, ability[0], expandedChampion.id);
         });
+        /* // This one exists and is supported, but is not used by the frontend so it has been disabled.
         Object.values(await expandedChampion.skins).forEach((skin) => {
             insertOrUpdateSkin(connection, skin, expandedChampion.name);
         });
+        */
     },
     /**
      * Inserts or updates a single rotation json object into the correct columns in the db

@@ -1,14 +1,27 @@
 // Takes care of formating, storing and retrieving champion ability data
 
+
+/**
+ * Since RIOT is using a character that this version of MySQL does not support, 
+ * that character is replaced with a similar one that is supported
+ * @param {string} string 
+ * @returns 
+ */
+const sanitizeASCII = (string) => {
+    return string.replace(/\u2212|\u2013|\u2014/g, "-");
+}
+
+const toMySQLBoolean = (boolean) => {
+    
+
 /**
  * Flattens the nested description objects in the effects array into a string array
- * @param {*} abilityJson 
+ * @param {string} abilityJson 
  */
-const formatDescription = (abilityJson) => {
-    const effectsArray = abilityJson.effects;
+const formatEffectDescriptions = (effectsArray) => {
     const descriptionArray = [];
     Object.values(effectsArray).forEach((effect) => {
-        descriptionArray.push(effect.description);
+        descriptionArray.push(sanitizeASCII(effect.description));
     });
     return descriptionArray;
 }
@@ -18,7 +31,7 @@ const getBaseValues = (abilityJson) => {
     return [
         abilityJson.name,
         abilityJson.icon,
-        JSON.stringify(formatDescription(abilityJson.description)),
+        JSON.stringify(formatEffectDescriptions(abilityJson.effects)),
         abilityJson.cost,
         abilityJson.targeting,
         abilityJson.affects,
@@ -95,7 +108,7 @@ export const updateAbility = async (connection, abilityJson, championKey) => {
  * @param {number} championKey 
  */
 export const getAbilityByChampionAndName = async (connection, championKey, abilityName, callback) => {
-    connection.query("SELECT * FROM abilities WHERE champion_key = ? AND name = ?", [championKey, abilityName], (err, result) => {
+    connection.query("SELECT * FROM champion_abilities WHERE champion_key = ? AND name = ?", [championKey, abilityName], (err, result) => {
         callback(err, result);
     });
 }
@@ -134,31 +147,31 @@ export const createAbilitiesTableQuery = `CREATE TABLE IF NOT EXISTS champion_ab
     id INT(11) NOT NULL AUTO_INCREMENT,
     champion_key VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    icon VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    cost VARCHAR(255) NOT NULL,
-    targeting VARCHAR(255) NOT NULL,
-    affects VARCHAR(255) NOT NULL,
-    spellshieldable Boolean NOT NULL,
-    resource VARCHAR(255) NOT NULL,
-    damageType VARCHAR(255) NOT NULL,
-    spellEffects VARCHAR(255) NOT NULL,
-    projectile Boolean NOT NULL,
-    occurrence VARCHAR(255) NOT NULL,
-    notes TEXT NOT NULL,
-    blurb TEXT NOT NULL,
-    missileSpeed VARCHAR(255) NOT NULL,
-    rechargeRate VARCHAR(255) NOT NULL,
-    collisionRadius VARCHAR(255) NOT NULL,
-    tetherRadius VARCHAR(255) NOT NULL,
-    onTargetCdStatic VARCHAR(255) NOT NULL,
-    innerRadius VARCHAR(255) NOT NULL,
-    speed VARCHAR(255) NOT NULL,
-    width VARCHAR(255) NOT NULL,
-    angle VARCHAR(255) NOT NULL,
-    castTime VARCHAR(255) NOT NULL,
-    effectRadius VARCHAR(255) NOT NULL,
-    targetRange VARCHAR(255) NOT NULL,
+    icon VARCHAR(255),
+    description VARCHAR(2000),
+    cost VARCHAR(255),
+    targeting VARCHAR(255),
+    affects VARCHAR(255),
+    spellshieldable Boolean,
+    resource VARCHAR(255),
+    damageType VARCHAR(255),
+    spellEffects VARCHAR(255),
+    projectile Boolean,
+    occurrence VARCHAR(255),
+    notes TEXT,
+    blurb TEXT,
+    missileSpeed VARCHAR(255),
+    rechargeRate VARCHAR(255),
+    collisionRadius VARCHAR(255),
+    tetherRadius VARCHAR(255),
+    onTargetCdStatic VARCHAR(255),
+    innerRadius VARCHAR(255),
+    speed VARCHAR(255),
+    width VARCHAR(255),
+    angle VARCHAR(255),
+    castTime VARCHAR(255),
+    effectRadius VARCHAR(255),
+    targetRange VARCHAR(255),
     PRIMARY KEY (id)
 )`;
 
@@ -191,7 +204,7 @@ const updateAbilityQuery = `
         castTime = ?,
         effectRadius = ?,
         targetRange = ?
-    WHERE champion_key = ? AND name = ?
+    WHERE champion_key = ? AND name = ?;
 `;
 
 const insertAbilityQuery = `
@@ -223,5 +236,5 @@ const insertAbilityQuery = `
         castTime,
         effectRadius,
         targetRange
-    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
 `;
