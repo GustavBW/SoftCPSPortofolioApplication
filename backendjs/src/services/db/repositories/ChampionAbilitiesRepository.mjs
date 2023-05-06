@@ -11,7 +11,23 @@ const sanitizeASCII = (string) => {
     return string.replace(/\u2212|\u2013|\u2014/g, "-");
 }
 
-const toMySQLBoolean = (boolean) => {
+/**
+ * Since Riots data uses the string "False" as a boolean, and mysql expects 0 or 1 for boolean values,
+ * this function maps them to the correct values
+ * @param {string} boolString
+ */
+const toMySQLBoolean = (boolString) => {
+    const lowerCase = boolString.toLowerCase();
+    if (lowerCase === 'false') {
+        return 0;
+    }
+    else if (lowerCase === 'true') {
+        return 1;
+    }
+    else {
+        return boolString;
+    }
+}
     
 
 /**
@@ -35,7 +51,7 @@ const getBaseValues = (abilityJson) => {
         abilityJson.cost,
         abilityJson.targeting,
         abilityJson.affects,
-        abilityJson.spellshieldable,
+        toMySQLBoolean(abilityJson.spellshieldable),
         abilityJson.resource,
         abilityJson.damageType,
         abilityJson.spellEffects,
