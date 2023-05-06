@@ -8,28 +8,20 @@
  * @returns 
  */
 const sanitizeASCII = (string) => {
-    return string.replace(/\u2212|\u2013|\u2014/g, "-");
-}
-
-/**
- * Since Riots data uses the string "False" as a boolean, and mysql expects 0 or 1 for boolean values,
- * this function maps them to the correct values
- * @param {string} boolString
- */
-const toMySQLBoolean = (boolString) => {
-    const lowerCase = boolString.toLowerCase();
-    if (lowerCase === 'false') {
-        return 0;
+    if(string == undefined || string == null){
+        return string;
     }
-    else if (lowerCase === 'true') {
-        return 1;
+    if(Array.isArray(string)){
+        string = JSON.stringify(string);
     }
-    else {
-        return boolString;
-    }
+    return string.replace(/\u2212|\u2013|\u2014/g, "-")
+    .replace(/\u221E/g, "Infinity")
+    .replace (/\u221A/g, "sqrt")
+    .replace(/\u2192/g, "->")
+    .replace(/\u202C/g, "")
+    .replace(/\u2260/g, "~"); // wiggly equals
 }
     
-
 /**
  * Flattens the nested description objects in the effects array into a string array
  * @param {string} abilityJson 
@@ -37,9 +29,22 @@ const toMySQLBoolean = (boolString) => {
 const formatEffectDescriptions = (effectsArray) => {
     const descriptionArray = [];
     Object.values(effectsArray).forEach((effect) => {
-        descriptionArray.push(sanitizeASCII(effect.description));
+        descriptionArray.push(effect.description);
     });
     return descriptionArray;
+}
+
+const formatCostArray = (costArray) => {
+    if(!costArray){
+        return "none";
+    }
+
+    const modifierArray = costArray.modifiers;
+    if(modifierArray){
+        return modifierArray[0].values;
+    }
+
+    return "error unknown";
 }
     
 
@@ -48,16 +53,15 @@ const getBaseValues = (abilityJson) => {
         abilityJson.name,
         abilityJson.icon,
         JSON.stringify(formatEffectDescriptions(abilityJson.effects)),
-        abilityJson.cost,
+        JSON.stringify(formatCostArray(abilityJson.cost)),
         abilityJson.targeting,
         abilityJson.affects,
-        toMySQLBoolean(abilityJson.spellshieldable),
+        abilityJson.spellshieldable,
         abilityJson.resource,
         abilityJson.damageType,
         abilityJson.spellEffects,
         abilityJson.projectile,
         abilityJson.occurrence,
-        abilityJson.notes,
         abilityJson.blurb,
         abilityJson.missileSpeed,
         abilityJson.rechargeRate,
@@ -71,7 +75,7 @@ const getBaseValues = (abilityJson) => {
         abilityJson.castTime,
         abilityJson.effectRadius,
         abilityJson.targetRange
-    ]
+    ].map((value) => sanitizeASCII(value));
 }
 
 /**
@@ -157,8 +161,6 @@ export const insertOrUpdateAbility = async (connection, abilityData, championKey
     }
 }
 
-
-
 export const createAbilitiesTableQuery = `CREATE TABLE IF NOT EXISTS champion_abilities (
     id INT(11) NOT NULL AUTO_INCREMENT,
     champion_key VARCHAR(255) NOT NULL,
@@ -168,13 +170,12 @@ export const createAbilitiesTableQuery = `CREATE TABLE IF NOT EXISTS champion_ab
     cost VARCHAR(255),
     targeting VARCHAR(255),
     affects VARCHAR(255),
-    spellshieldable Boolean,
+    spellshieldable VARCHAR(255),
     resource VARCHAR(255),
     damageType VARCHAR(255),
     spellEffects VARCHAR(255),
-    projectile Boolean,
+    projectile VARCHAR(255),
     occurrence VARCHAR(255),
-    notes TEXT,
     blurb TEXT,
     missileSpeed VARCHAR(255),
     rechargeRate VARCHAR(255),
@@ -206,7 +207,6 @@ const updateAbilityQuery = `
         spellEffects = ?,
         projectile = ?,
         occurrence = ?,
-        notes = ?,
         blurb = ?,
         missileSpeed = ?,
         rechargeRate = ?,
@@ -238,7 +238,6 @@ const insertAbilityQuery = `
         spellEffects,
         projectile,
         occurrence,
-        notes,
         blurb,
         missileSpeed,
         rechargeRate,
@@ -252,5 +251,5 @@ const insertAbilityQuery = `
         castTime,
         effectRadius,
         targetRange
-    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
 `;

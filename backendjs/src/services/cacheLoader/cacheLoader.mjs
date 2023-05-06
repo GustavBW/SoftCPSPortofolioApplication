@@ -54,11 +54,9 @@ const doLoadCycle = async () => {
         console.log(err);
     });
 
-    const rankedPromise = await updateHighestRankedPlayers();
+    // const rankedPromise = await updateHighestRankedPlayers();
 
-    await Promise.all([rotationPromise, championsPromise, rankedPromise
-    //     , championsDetailsPromise
-    ])
+    await Promise.all([rotationPromise, championsPromise, championsDetailsPromise])
     .then(() => {
         const deltaT = new Date().getTime() - timeA;
         console.log(`Cache loader total fetch time: ${new Date().getTime() - timeA}ms`);
