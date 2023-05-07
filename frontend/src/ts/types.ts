@@ -69,6 +69,36 @@ export interface ChampionStats {
     champion_key: string;
 }
 
+export interface Ability {
+    id: number;
+    champion_key: string;
+    name: string;
+    icon: string;
+    description: string[];
+    cost: string;
+    targeting: string;
+    affects: string;
+    spellshieldable: string;
+    resource: string;
+    damageType: string;
+    spellEffects: string;
+    projectile: string;
+    occurrence: string;
+    blurb: string;
+    missileSpeed: string;
+    rechargeRate: string;
+    collisionRadius: string;
+    tetherRadius: string;
+    onTargetCdStatic: string;
+    innerRadius: string;
+    speed: string;
+    width: string;
+    angle: string;
+    castTime: string;
+    effectRadius: string;
+    targetRange: string;
+}
+
 export interface Rotation {
     id: number;
     freeChampionIds: number[];

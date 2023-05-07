@@ -1,5 +1,57 @@
 .ChampionAbilityView{
+    display: grid;
+    grid-template-rows: .1fr 4fr 1fr;
+    align-items: center;
+    justify-items: baseline;
+    max-height: 100%;
+    width: 100%;
+    padding: 1rem;
+    padding-top: 0;
+    padding-right: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(0.5rem);
+}
+.ability-title{
+    font-size: 2rem;
+    text-align: left;
+    color: var(--gold-2);
+    filter: drop-shadow(0 0 0.5rem black);
+}
+
+.champion-abilities-row{
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    column-gap: 2rem;
     height: 100%;
     width: 100%;
-    background-color: green;
+}
+
+.selected-ability-container{
+    display: grid;
+    align-items: top;
+    width: 100%;
+    height: 100%;
+}
+
+.ability-button{
+    height: 5rem;
+    width: 5rem;
+    border-radius: 0;
+    background: transparent;
+    filter: drop-shadow(0 0 0.5rem black);
+}
+
+.ability-icon{
+    height: 100%;
+    width: 100%;
+    background: transparent;
+}
+
+.ability-description{
+    width: 100%;
+    max-height: 60%;
+    text-overflow: clip;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }

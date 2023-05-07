@@ -1,5 +1,6 @@
-import { Champion, ChampionStats, FetchTimeData, Rotation } from "./types";
+import { Ability, Champion, ChampionStats, FetchTimeData, Rotation } from "./types";
 import config from "../../env.json";
+import { formatDescription } from "./transferTool";
 
 const apiRoot = config.apiRoot;
 const serverUrl = config.serverUrl;
@@ -29,6 +30,13 @@ export async function getChampionStats(id: number): Promise<ChampionStats> {
     const response = await fetch(`${serverUrl}${apiRoot}/champions/${id}/stats`, { headers: headers });
     const data = await response.json();
     return data[0];
+}
+
+export async function getChampionAbilities(id: number): Promise<Ability[]> {
+    const response = await fetch(`${serverUrl}${apiRoot}/champions/${id}/abilities`, { headers: headers });
+    const data = await response.json();
+    data.description = formatDescription(data.description);
+    return data;
 }
 
 export async function getNewestRotation(): Promise<Rotation> {
