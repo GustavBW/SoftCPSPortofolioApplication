@@ -75,7 +75,7 @@ export interface Ability {
     name: string;
     icon: string;
     description: string[];
-    cost: string;
+    cost: string[];
     targeting: string;
     affects: string;
     spellshieldable: string;

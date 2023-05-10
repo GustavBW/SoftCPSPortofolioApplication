@@ -19,10 +19,15 @@ export default function ChampionAbilityView({ champion }: IChampionAbilityView) 
 
     const getSelected = () => {
         if (selectedAbility !== null && selectedAbility !== undefined) {
+            //console.table(selectedAbility.description);
             return (
-                <>
-                    <p className="ability-description">{selectedAbility.description}</p>
-                </>
+                <div className="ability-description">
+                    {selectedAbility.description.map((line, index) => {
+                        return (
+                            <p className="ability-description-line" key={index}>{line}</p>
+                        );
+                    })}
+                </div>
             );
         }else{
             return (
@@ -33,10 +38,28 @@ export default function ChampionAbilityView({ champion }: IChampionAbilityView) 
         }
     }
 
+    const getAbilityTitle = () => {
+        if(selectedAbility === null || selectedAbility === undefined) return (<></>);
+        console.log(selectedAbility.cost);
+        return (
+            <>
+                <h1>{selectedAbility.name}</h1>
+                {selectedAbility.cost.map((cost, index) => {
+                    <h1 className="ability-cost" key={index}>{cost}</h1> 
+                })}
+                
+            </>
+        );
+    }
+
 
     return (
         <div className="ChampionAbilityView">
-            <h1 className="ability-title"> {selectedAbility != null ? selectedAbility.name : "Abilities"} </h1>
+            <div className="ability-title"> {selectedAbility != null ? 
+                getAbilityTitle()
+                : 
+                <h1>Abilities</h1>
+            } </div>
 
             <div className="selected-ability-container">
                 {getSelected()}

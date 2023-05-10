@@ -1,6 +1,6 @@
 import { Ability, Champion, ChampionStats, FetchTimeData, Rotation } from "./types";
 import config from "../../env.json";
-import { formatDescription } from "./transferTool";
+import { formatCost, formatDescription } from "./transferTool";
 
 const apiRoot = config.apiRoot;
 const serverUrl = config.serverUrl;
@@ -35,7 +35,16 @@ export async function getChampionStats(id: number): Promise<ChampionStats> {
 export async function getChampionAbilities(id: number): Promise<Ability[]> {
     const response = await fetch(`${serverUrl}${apiRoot}/champions/${id}/abilities`, { headers: headers });
     const data = await response.json();
-    data.description = formatDescription(data.description);
+
+    //minor data formatting functions
+    Object.values(data).forEach((ability: any) => {
+        ability.description = formatDescription(ability.description);
+    });
+
+    Object.values(data).forEach((ability: any) => {
+        ability.cost = formatCost(ability.cost);
+    });
+
     return data;
 }
 

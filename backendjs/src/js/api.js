@@ -1,11 +1,13 @@
 import config from '../../env.json' assert { type: "json" };
 import db from '../services/db/db.mjs';
 import cors from 'cors';
+import { Router } from 'express';
 
 const apiRoot = config.appConfig.apiRoot;
 
 export const initializeApi = (server) => {
     server.use(cors());
+    //const router = server.Router();
 
     server.listen(config.appConfig.port, () => {
         console.log(`SLS Backend Service listening at http://localhost:${config.appConfig.port}`)

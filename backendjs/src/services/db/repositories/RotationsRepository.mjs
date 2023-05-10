@@ -9,6 +9,7 @@ const simplifiedDate = ()=>{
 }
 
 const getBaseValues = (rotation) => {
+    
     return [
         JSON.stringify(rotation.freeChampionIds),
         JSON.stringify(rotation.freeChampionIdsForNewPlayers),
