@@ -1,29 +1,40 @@
 .ChampionAbilityView{
+    position: absolute;
     display: grid;
     grid-template-rows: .1fr 4fr 1fr;
-    align-items: center;
-    justify-items: baseline;
-    max-height: 100%;
-    min-height: 100%;
-    max-width: 100%;
+    align-items: space-between;
+    justify-items: space-around;
+    top: 9rem;
+    width: 60%;
+    height: 40%;
     border-radius: .5rem;
     padding: 1rem;
     background: rgba(0,0,0,0.5);
     backdrop-filter: blur(0.5rem);
 }
+
+.placeholder-title{
+    font-size: 1.75rem;
+}
+
 .ability-title{
     font-size: .75rem;  
     text-align: left;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
+    justify-items: space-between;
+ 
+    min-width: 100%;
+
     color: var(--gold-2);
     filter: drop-shadow(0 0 0.5rem black);
 }
 
 .ability-cost{
+    text-align: right;
     color: var(--blue-3);
+    font-size: 1.5rem;
 }
 
 .champion-abilities-row{
@@ -32,7 +43,6 @@
     column-gap: 2rem;
     align-items: center;
     justify-items: center;
-    height: 100%;
     width: 100%;
 }
 
@@ -41,6 +51,7 @@
     align-items: top;
     width: 100%;
     max-height: 100%;
+    overflow: auto;
 }
 
 .ability-button{

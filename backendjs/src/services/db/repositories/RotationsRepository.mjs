@@ -3,9 +3,11 @@
 const simplifiedDate = ()=>{
     const now = new Date();
     const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-    return `${year}-${month}-${day}`;
+    let month = now.getMonth() + 1;
+    const formattedMonth = month > 10 ? "0" + month : month;
+    let day = now.getDate();
+    const formattedDay = day > 10 ? "0" + day : day;
+    return Number(`${year}${formattedMonth}${formattedDay}`);
 }
 
 const getBaseValues = (rotation) => {
@@ -42,7 +44,7 @@ export const insertRotation = async (connection, json) => {
  */
 export const updateRotation = async (connection, json, id) => {
     try {
-        await connection.query(insertRotationQuery, getBaseValues(json));
+        await connection.query(updateRotationQuery, [...getBaseValues(json), id]);
         console.log('Rotation added to the table.');
     } catch (err) {
         console.log('Error inserting rotation');
@@ -57,12 +59,7 @@ export const updateRotation = async (connection, json, id) => {
  * @description Gets rotation for today
  */
 export const getRotationForToday = async (connection, callback) => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-  
-    const query = `SELECT * FROM rotations WHERE latestUpdate = '${year}-${month}-${day}'`;
+    const query = `SELECT * FROM rotations WHERE latestUpdate = ${simplifiedDate()}`;
     connection.query(query, callback);
 }
 
@@ -99,7 +96,7 @@ export const createRotationsTableQuery = `CREATE TABLE IF NOT EXISTS rotations (
     freeChampionIds VARCHAR(500) NOT NULL,
     freeChampionIdsForNewPlayers VARCHAR(500) NOT NULL,
     maxNewPlayerLevel INT NOT NULL,
-    latestUpdate VARCHAR(255) NOT NULL,
+    latestUpdate INT NOT NULL,
     PRIMARY KEY (id)
 )`;
 

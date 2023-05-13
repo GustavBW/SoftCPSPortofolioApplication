@@ -91,6 +91,7 @@ export default function ChampionView({ champion, onDeselect, show, setAnchorType
             style={getViewStyle()} 
             onMouseEnter={e=>setAnchorType(AnchorTypes.Mouse)} 
             onMouseLeave={e => {()=>onDeselect()}}
+            data-testid={"champion-view"}
             >
             <div className="cw-content">
                 <div className="name-and-title">

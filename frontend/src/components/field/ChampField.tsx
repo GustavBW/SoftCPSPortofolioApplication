@@ -5,7 +5,6 @@ import ChampThumbnail from '../champion/ChampThumbnail';
 import './ChampField.css';
 import iterateField, { FieldIndex, FieldIteratorState } from '../../ts/fieldGenerationIterator';
 import { SearchFilter } from '../../ts/filters';
-import {levenshteinSort2} from '../../ts/levelstein';
 import Spinner from '../loadingSpinner/Spinner';
 import { AnchorTypes } from '../movement/MovementAnchor';
 import levenshteinSort from '../../ts/levenshtein';
@@ -23,7 +22,7 @@ interface ChampFieldProps {
      * What aspect of champion data to sort based on
      * Default: name
      */
-    filterOn: SearchFilter<Champion>,
+    filterOn: SearchFilter<Champion,any>,
     /**
      * The algorithm used to sort the champion list.
      * Default: Reversed Alphabetical
@@ -37,6 +36,7 @@ const sqrt3 = Math.sqrt(3);
 const tileWidthPercent = .075; //percentage of the screen width
 
 export default function ChampField({ center, mouse, filterOn, searchTerm, setAnchorType, setSelectedChampion }: ChampFieldProps) {
+    const [displayedChampions, setDisplayedChampions] = React.useState<Champion[]>([]);
     const [champions, setChampions] = React.useState<Champion[]>([]);
     const [fieldIndicies, setFieldIndicies] = React.useState<FieldIndex[]>([]);
     const [tileWidth, setTileWidth] = React.useState<number>(2 * center.x * tileWidthPercent * 1.1);
@@ -67,6 +67,7 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
         getAllChampions().then(champs => {
             console.log(`fetching champions took ${performance.now() - timeA} ms`);
             updateChampionIndicies(champs);
+            setDisplayedChampions(champs);
             setChampions(champs);
             setIsLoading(false);
         });
@@ -74,14 +75,29 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
 
     useEffect(() => {
         const timeA = performance.now();
+        let champsToSort = [...champions];
+
+        const prepPropsAndApply = async(
+                    reducer: (item: Champion, state: any) => boolean,
+                    stateGatherer: () => Promise<any>
+                ): Promise<Champion[]> => {
+            const reducerState = await stateGatherer();
+            return champsToSort.filter(t => reducer(t, reducerState));
+        }
+        if (filterOn.reducer) {
+            prepPropsAndApply(filterOn.reducer, filterOn.gatherReducerProps!).then((reducedChampions) => {
+                setDisplayedChampions(levenshteinSort(reducedChampions, filterOn, searchTerm.toLowerCase()));
+                const timeB = performance.now();
+                console.log(`sorting and reducing took ${timeB - timeA} ms`);
+            });
+        }else{
+            setDisplayedChampions(levenshteinSort(champsToSort, filterOn, searchTerm.toLowerCase()));
+            const timeB = performance.now();
+            console.log(`sorting took ${timeB - timeA} ms`);
+        }
+
         //theres no excuse to bad search fields when levenshtein exists - and is very fast
-        setChampions( 
-            //this is actually inefficient. we should be sorting the indicies, not the champions
-            //however, the unintentional staggered animation when the images are reloaded is pretty cool
-            levenshteinSort(champions, filterOn, searchTerm.toLowerCase()) 
-            );
-        const timeB = performance.now();
-        console.log(`sorting took ${timeB - timeA} ms`);
+
     }, [searchTerm, filterOn]);
 
     //See GenerationStrategies for more info
@@ -90,8 +106,8 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
     }, [champions]);
 
     useEffect(() => {
-        updateChampionIndicies(champions);
-    },[center]);
+        updateChampionIndicies(displayedChampions);
+    }, [center]);
 
     const getSpinner = () => {
         if(isLoading) {
@@ -100,11 +116,19 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
     }
 
     return (
-        <div className="ChampField">
+        <div className="ChampField" data-testid={"champion-field"}>
             {getSpinner()}
-            {champions.map((champion, index) => {
+            {displayedChampions.map((champion, index) => {
                 return (
-                    <ChampThumbnail setSelectedChampion={setSelectedChampion} width={tileWidth} center={center} mouse={mouse} champion={champion} fieldIndex={fieldIndicies[index]} key={index} setAnchorType={setAnchorType} />
+                    <ChampThumbnail setSelectedChampion={setSelectedChampion} 
+                        width={tileWidth} 
+                        center={center} 
+                        mouse={mouse} 
+                        champion={champion} 
+                        fieldIndex={fieldIndicies[index]} 
+                        key={index} 
+                        setAnchorType={setAnchorType} 
+                        />
                 )
             })}
         </div>

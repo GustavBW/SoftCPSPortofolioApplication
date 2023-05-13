@@ -19,7 +19,6 @@ export default function ChampionAbilityView({ champion }: IChampionAbilityView) 
 
     const getSelected = () => {
         if (selectedAbility !== null && selectedAbility !== undefined) {
-            //console.table(selectedAbility.description);
             return (
                 <div className="ability-description">
                     {selectedAbility.description.map((line, index) => {
@@ -38,27 +37,42 @@ export default function ChampionAbilityView({ champion }: IChampionAbilityView) 
         }
     }
 
-    const getAbilityTitle = () => {
+    const getCost = () => {
         if(selectedAbility === null || selectedAbility === undefined) return (<></>);
-        console.log(selectedAbility.cost);
-        return (
+
+        if(selectedAbility.cost.length === 0) return (
             <>
-                <h1>{selectedAbility.name}</h1>
-                {selectedAbility.cost.map((cost, index) => {
-                    <h1 className="ability-cost" key={index}>{cost}</h1> 
-                })}
-                
+                <h1 className="ability-cost"> Free </h1>
             </>
+        );
+
+        return (
+            <div className="">
+                {selectedAbility.cost.map((cost, index) =>
+                    <p className="ability-cost" key={index}> {cost + ""} </p>
+                )}
+                <h1 className="ability-cost"> {champion.partype} </h1>
+            </div>
         );
     }
 
+    const getAbilityTitle = () => {
+        if(selectedAbility === null || selectedAbility === undefined) return (<></>);
+  
+        return (
+            <div className="ability-title">
+                <h1>{selectedAbility.name}</h1>
+                {getCost()}
+            </div>
+        );
+    }
 
     return (
         <div className="ChampionAbilityView">
-            <div className="ability-title"> {selectedAbility != null ? 
+            <div> {selectedAbility != null ? 
                 getAbilityTitle()
                 : 
-                <h1>Abilities</h1>
+                <h1 className="placeholder-title">Abilities</h1>
             } </div>
 
             <div className="selected-ability-container">

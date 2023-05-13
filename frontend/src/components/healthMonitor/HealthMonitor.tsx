@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import './HealthMonitor.css';
 import { AnchorTypes } from '../movement/MovementAnchor';
 import HealthPanel from './healthPanel/HealthPanel';
+import HealthIcon from './healthIcon/HealthIcon';
 
 
 interface HealthMonitorProps {
@@ -50,40 +51,20 @@ export default function HealthMonitor({ setAnchorType, center }: HealthMonitorPr
                 center={center} //my graphs library doesnt scale at all, so I made it
             />
 
-            <svg className="health-monitor-icon" style={ hover ? { filter: "drop-shadow( 0 0 1rem white)" } : {}}
-                width="50%" height="50%" 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="-0.1 0.216986 16.2 16.88"
-                >
-                <defs>
-                    <linearGradient id="health-monitor-blue" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="var(--blue-4)" />
-                        <stop offset="50%" stopColor="var(--blue-3)" />
-                        <stop offset="100%" stopColor="var(--blue-5)" />
-                    </linearGradient>
-                    <linearGradient id="health-monitor-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="var(--gold-4)" />
-                        <stop offset="50%" stopColor="var(--gold-3)" />
-                        <stop offset="100%" stopColor="var(--gold-5)" />
-                    </linearGradient>
-                    <linearGradient id="hm-no-connection" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="var(--red-3)" />
-                        <stop offset="50%" stopColor="var(--red-1)" />
-                        <stop offset="100%" stopColor="var(--red-2)" />
-                    </linearGradient>
-                </defs>
-                
-                <path className="health-monitor-icon" d={paths[0]} stroke="url(#health-monitor-gold)" 
-                    strokeWidth="0.2" fill={connectionError ? "url(#hm-no-connection)" : "url(#health-monitor-blue)" }
-                    />
-                <path className="health-monitor-icon" 
-                    d={paths[1]} stroke={connectionError ? "white" : "url(#health-monitor-gold)"} 
-                    strokeWidth={showHealthInfo ? "0.3" : "1"} fill="none" />
-                <path className="health-monitor-icon" 
-                    d={paths[2]} stroke="url(#health-monitor-gold)" strokeWidth="0.3" fill="none" />
-            </svg>
-            <div className="hm-background" 
-            />
+            <HealthIcon hover={hover} paths={paths} 
+                connectionError={connectionError} showHealthInfo={showHealthInfo}
+                iconStyle={{
+                    top: "0",
+                    right: "0",
+                    marginTop: "5%",
+                    marginRight: "-.75vw",
+                    position: "absolute",
+                    zIndex: "101"
+                }}  
+                />
+
+           
+            <div className="hm-background" />
             <button className="hm-button" 
                 onClick={e => { setShowHealthInfo(!showHealthInfo) }}
                 onMouseEnter={e => { setAnchorType(AnchorTypes.Mouse); setHover(true) }}

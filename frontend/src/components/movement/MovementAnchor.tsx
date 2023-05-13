@@ -84,7 +84,9 @@ export default function MovementAnchor({ center, mouse, type }: MovementAnchorPr
  
 
     return (
-        <div className="MovementAnchor" style={{ top: mouse.y + "px", left: mouse.x + "px", clipPath: paths[4]}}>
+        <div className="MovementAnchor" style={{ top: mouse.y + "px", left: mouse.x + "px", clipPath: paths[4]}}
+            data-testid="movement-anchor"
+        >
             <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" viewBox="-12.1 -12.1 24.2 24.2">
                 <defs>
                     <linearGradient id={"movement-anchor-gradient"} x1="0%" y1="100%" x2="100%" y2="0%">

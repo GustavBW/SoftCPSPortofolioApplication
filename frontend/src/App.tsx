@@ -8,6 +8,7 @@ import { championFilters } from './ts/filters'
 import HealthMonitor from './components/healthMonitor/HealthMonitor'
 import ChampionView from './components/champion/championView/ChampionView'
 import ErrorBoundary from './components/error/ErrorBoundary'
+import InfoPanel from './components/functionPanel/infoPanel/InfoPanel'
 
 function App() {
   const [center, setCenter] = useState({ x: 0, y: 0 }); // in pixels
@@ -18,6 +19,7 @@ function App() {
   const [anchorType, setAnchorType] = useState(AnchorTypes.Movement); //Champion attribute filter function
   const [selectedChampion, setSelectedChampion] = useState<Champion | null>(null); //Champion attribute filter function
   const [showSelectedChampion, setShowSelectedChampion] = useState(false); //Champion attribute filter function
+  const [showInfoPanel, setShowInfoPanel] = useState(false); //website info panel
 
 
   //Due to the heavy use of SVG elements, which does not scale as regular DOM elements, 
@@ -67,6 +69,7 @@ function App() {
         setSearchTerm={setSearchTerm} 
         setFilterType={setChampionFilter} 
         setAnchorType={setAnchorType}
+        toggleInfoPanel={() => setShowInfoPanel(!showInfoPanel)}
       />
       <MovementAnchor 
         center={center} 
@@ -81,6 +84,7 @@ function App() {
         searchTerm={searchTerm} 
         setAnchorType={setAnchorType} 
       />
+      <InfoPanel show={showInfoPanel} onDeselect={() => setShowInfoPanel(false)} setAnchorType={setAnchorType}/>
 
       <img className="background" loading="lazy" src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/lcu-article-backdrop.jpg" alt="background" />
     </div>

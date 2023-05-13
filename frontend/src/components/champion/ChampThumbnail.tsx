@@ -58,6 +58,8 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
             onMouseOver={e => {setHover(true); setAnchorType(AnchorTypes.Grabber)}} 
             onMouseLeave={e => {setHover(false); setAnchorType(AnchorTypes.Movement)}}
             aria-label={champion.name}
+            data-testid="champ-thumbnail"
+            id={"champ-thumb-" + champion.champion_key}
             >
             {hover ? <h1 className="name-tag">{champion.name}</h1> : <></>}
             <button className="select-button" onClick={e=>setSelectedChampion(champion)}/>

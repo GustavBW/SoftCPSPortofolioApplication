@@ -109,6 +109,6 @@ export interface Rotation {
 
 export interface FetchTimeData {
     id: number;
-    fetch_time_ms: number;
+    fetchTimeMs: number;
     timestamp: Date;
 }

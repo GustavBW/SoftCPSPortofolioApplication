@@ -163,7 +163,7 @@ export const insertOrUpdateAbility = async (connection, abilityData, championKey
 
 export const createAbilitiesTableQuery = `CREATE TABLE IF NOT EXISTS champion_abilities (
     id INT(11) NOT NULL AUTO_INCREMENT,
-    champion_key VARCHAR(255) NOT NULL,
+    champion_key INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     icon VARCHAR(255),
     description VARCHAR(2000),

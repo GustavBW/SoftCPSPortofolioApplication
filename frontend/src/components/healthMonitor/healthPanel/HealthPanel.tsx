@@ -40,22 +40,22 @@ export default function HealthPanel({ onDeselect, style, setAnchorType, onError,
             <div className="fetch-time-container">
 
                 <h2 className="fetch-time-title">Fetch Times</h2>
-                <div className="fetch-time-graph">
-                    <GraphView<FetchTimeData> 
-                        data={fetchTimes} 
-                        center={center}
-                        setAnchorType={setAnchorType} 
-                        contentStyle={{ 
-                            backgroundColor: 'rgba(0,0,0,0.8)' ,
-                            width: '51%',
-                            textWrap: 'break',
-                            overflow: 'hidden',
-                            color: 'var(--gold-1)',
-                            textAlign: 'center'
-                        }}
-                        widthHeightScalars={{ x: .3, y: .3 }}
-                    />
-                </div>
+    
+                <GraphView<FetchTimeData> 
+                    data={fetchTimes} 
+                    center={center}
+                    setAnchorType={setAnchorType} 
+                    contentStyle={{ 
+                        backgroundColor: 'rgba(0,0,0,0.8)' ,
+                        width: '51%',
+                        textWrap: 'break',
+                        overflow: 'hidden',
+                        color: 'var(--gold-1)',
+                        textAlign: 'center'
+                    }}
+                    widthHeightScalars={{ x: .3, y: .3 }}
+                />
+ 
 
                 <div className="fetch-time-options">
                     <div className="input-label-pair" onMouseEnter={e => setAnchorType(AnchorTypes.Text)} onMouseLeave={e => setAnchorType(AnchorTypes.Mouse)}>

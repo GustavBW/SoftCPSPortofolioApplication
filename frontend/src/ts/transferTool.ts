@@ -4,6 +4,6 @@ export const formatDescription = (description: string): string[] => {
 }
 
 export const formatCost = (cost: string): string[] => {
-    if(cost == undefined || cost == null || cost == "") return [];
+    if(cost == undefined || cost == null || cost == "" || cost == "\"none\"") return [];
     return new Array(JSON.parse(cost));
 }

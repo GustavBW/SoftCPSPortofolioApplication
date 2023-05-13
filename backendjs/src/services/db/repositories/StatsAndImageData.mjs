@@ -67,7 +67,7 @@ export const createChampionStatsTableQuery = `CREATE TABLE IF NOT EXISTS champio
     attackdamageperlevel FLOAT NOT NULL,
     attackspeedperlevel FLOAT NOT NULL,
     attackspeed FLOAT NOT NULL,
-    champion_key VARCHAR(255) NOT NULL,
+    champion_key INT NOT NULL,
     PRIMARY KEY (id)
 )`;
 export const createChampionImageDataQuery = `CREATE TABLE IF NOT EXISTS champion_image_data (
@@ -79,6 +79,6 @@ export const createChampionImageDataQuery = `CREATE TABLE IF NOT EXISTS champion
     image_y INT(11),
     image_w INT(11),
     image_h INT(11),
-    champion_key VARCHAR(255) NOT NULL,
+    champion_key INT NOT NULL,
     PRIMARY KEY (id)
     )`;

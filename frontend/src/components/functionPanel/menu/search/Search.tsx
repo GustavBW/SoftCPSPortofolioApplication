@@ -15,6 +15,7 @@ export default function Search({ setSearchTerm, setAnchorType }: SearchProps) {
         <button className="Search"
             onMouseEnter={e => setShowSearch(true)}
             onMouseLeave={e => { inputActive ? {} : setShowSearch(false); setAnchorType(AnchorTypes.Mouse) }}
+            data-testid={"menu-search"}
         >
             <svg className="search-icon-left" //this is the left half circle
                 style={showSearch ? { left: "-52%", borderRadius: "0" } : { height: "35%" }}
@@ -33,7 +34,7 @@ export default function Search({ setSearchTerm, setAnchorType }: SearchProps) {
                 />
             </svg>
 
-            <input type="text" className="search-input"
+            <input type="text" className="search-input" data-testid={"menu-search-input"}
                 onMouseEnter={e => { setShowSearch(true); setAnchorType(AnchorTypes.Text) }}
                 onMouseLeave={e => { inputActive ? {} : setShowSearch(false); setAnchorType(AnchorTypes.Mouse) }}
                 onFocus={e => { setInputActive(true); setAnchorType(AnchorTypes.Text) }}

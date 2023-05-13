@@ -125,7 +125,7 @@ export const createChampionsTableQuery = `CREATE TABLE IF NOT EXISTS champions (
     id INT(11) NOT NULL AUTO_INCREMENT,
     version VARCHAR(255) NOT NULL,
     champion_id VARCHAR(255) NOT NULL,
-    champion_key VARCHAR(255) NOT NULL,
+    champion_key INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
     blurb TEXT NOT NULL,
