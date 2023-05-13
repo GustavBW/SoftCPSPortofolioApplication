@@ -4,7 +4,6 @@
     position: relative;
     overflow: hidden;
     border: 0;
-    padding: .5rem;
     border-top: 2px solid var(--gold-4);
     background: transparent;
     text-align: center;
@@ -12,5 +11,6 @@
     margin: 0;
     flex-direction: column;
     justify-content: center;
+    z-index: 9999;
     align-items: center;
 }

@@ -11,21 +11,21 @@ interface MenuProps {
     setFilterType: (filter: SearchFilter<Champion,any>) => void;
     setAnchorType: (type: AnchorTypes) => void;
     toggleInfoPanel: () => void;
+    setForceCenterField: (value: boolean) => void;
 }
 
-export default function Menu({ setSearchTerm, setFilterType, setAnchorType, toggleInfoPanel }: MenuProps) {
+export default function Menu({ setSearchTerm, setFilterType, setAnchorType, toggleInfoPanel, setForceCenterField }: MenuProps) {
 
     return(
         <div className="Menu" onMouseEnter={e => setAnchorType(AnchorTypes.Mouse)} onMouseLeave={e => setAnchorType(AnchorTypes.Movement)}
-            data-testid={"function-menu"}
+            data-testid="function-menu"
         >
-
             <button className="info-container" onClick={e => toggleInfoPanel()}
                 onMouseEnter={e => setAnchorType(AnchorTypes.Hand)} onMouseLeave={e => setAnchorType(AnchorTypes.Mouse)}
                 data-testid={"menu-info-button"}
             >?</button>
     
-            <Search setSearchTerm={setSearchTerm} setAnchorType={setAnchorType} />
+            <Search setSearchTerm={setSearchTerm} setAnchorType={setAnchorType} setForceCenterField={setForceCenterField} />
             
             <FilterSelect setFilterType={setFilterType} setAnchorType={setAnchorType} />
         </div>

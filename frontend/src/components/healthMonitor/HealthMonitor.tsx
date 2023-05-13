@@ -8,6 +8,8 @@ import HealthIcon from './healthIcon/HealthIcon';
 interface HealthMonitorProps {
     setAnchorType: (type: AnchorTypes) => void;
     center: {x: number, y: number};
+    showHealthPanel: boolean;
+    setShowHealthPanel: (value: boolean) => void;
 }
 
 const pathsHeart: string[] = [
@@ -26,33 +28,34 @@ const pathsClose: string[] = [
     "M 7 9 L 2 14 L 2 12 L 0 12 L 5 7 L 0 2 L 2 2 L 2 0 L 7 5 L 12 0 L 12 2 L 14 2 L 9 7 L 14 12 L 12 12 L 12 14 Z"
 ];
 
-export default function HealthMonitor({ setAnchorType, center }: HealthMonitorProps) {
+export default function HealthMonitor({ setAnchorType, center, showHealthPanel, setShowHealthPanel }: HealthMonitorProps) {
     const [hover, setHover] = React.useState(false);
-    const [showHealthInfo, setShowHealthInfo] = React.useState(false);
     const [connectionError, setConnectionError] = React.useState(false);
     const [paths, setPaths] = React.useState(pathsHeart);
 
     useEffect(() =>{
         if (connectionError) {
             setPaths(pathsFlatline);
-        } else if (showHealthInfo) {
+        } else if (showHealthPanel) {
             setPaths(pathsClose);
         } else {
             setPaths(pathsHeart);
         }
-    }, [connectionError, showHealthInfo])
+    }, [connectionError, showHealthPanel])
 
     return(
-        <div className="HealthMonitor" >
+        <div className="HealthMonitor" 
+            data-testid="health-monitor"
+        >
             <HealthPanel setAnchorType={setAnchorType} 
-                style={showHealthInfo ? { right: "0%" } : { right: "-33%" }} 
+                style={showHealthPanel ? { right: "0%" } : { right: "-33%" }} 
                 onDeselect={() => {}} //do nothing
                 onError={(state: boolean) => setConnectionError(state)}
                 center={center} //my graphs library doesnt scale at all, so I made it
             />
 
             <HealthIcon hover={hover} paths={paths} 
-                connectionError={connectionError} showHealthInfo={showHealthInfo}
+                connectionError={connectionError} showHealthInfo={showHealthPanel}
                 iconStyle={{
                     top: "0",
                     right: "0",
@@ -66,7 +69,7 @@ export default function HealthMonitor({ setAnchorType, center }: HealthMonitorPr
            
             <div className="hm-background" />
             <button className="hm-button" 
-                onClick={e => { setShowHealthInfo(!showHealthInfo) }}
+                onClick={e => { setShowHealthPanel(!showHealthPanel) }}
                 onMouseEnter={e => { setAnchorType(AnchorTypes.Mouse); setHover(true) }}
                 onMouseLeave={e => { setAnchorType(AnchorTypes.Movement); setHover(false) }}
             />

@@ -5,16 +5,22 @@ import { AnchorTypes } from '../../../movement/MovementAnchor';
 interface SearchProps {
     setSearchTerm: (term: string) => void
     setAnchorType: (type: AnchorTypes) => void;
+    setForceCenterField: (value: boolean) => void;
 }
 
-export default function Search({ setSearchTerm, setAnchorType }: SearchProps) {
+export default function Search({ setSearchTerm, setAnchorType, setForceCenterField }: SearchProps) {
     const [showSearch, setShowSearch] = React.useState(false);
     const [inputActive, setInputActive] = React.useState(false);
+
+    const onInputStateChange = (state: boolean) => {
+        setForceCenterField(state);
+        setInputActive(state);
+    }
 
     return(
         <button className="Search"
             onMouseEnter={e => setShowSearch(true)}
-            onMouseLeave={e => { inputActive ? {} : setShowSearch(false); setAnchorType(AnchorTypes.Mouse) }}
+            onMouseLeave={e => { inputActive ? {} : setShowSearch(false); setAnchorType(AnchorTypes.Mouse); setForceCenterField(false) }}
             data-testid={"menu-search"}
         >
             <svg className="search-icon-left" //this is the left half circle
@@ -35,11 +41,11 @@ export default function Search({ setSearchTerm, setAnchorType }: SearchProps) {
             </svg>
 
             <input type="text" className="search-input" data-testid={"menu-search-input"}
-                onMouseEnter={e => { setShowSearch(true); setAnchorType(AnchorTypes.Text) }}
+                onMouseEnter={e => { setShowSearch(true); setAnchorType(AnchorTypes.Text); setForceCenterField(true) }}
                 onMouseLeave={e => { inputActive ? {} : setShowSearch(false); setAnchorType(AnchorTypes.Mouse) }}
-                onFocus={e => { setInputActive(true); setAnchorType(AnchorTypes.Text) }}
-                onBlur={e => { setInputActive(false); setShowSearch(false); setAnchorType(AnchorTypes.Mouse) }}
-                onChange={e => setSearchTerm(e.target.value)}
+                onFocus={e => { onInputStateChange(true); setAnchorType(AnchorTypes.Text) }}
+                onBlur={e => { onInputStateChange(false); setShowSearch(false); setAnchorType(AnchorTypes.Mouse) }}
+                onChange={e => {setSearchTerm(e.target.value); setForceCenterField(true)}}
                 placeholder="Search"
                 style={showSearch ? { width: "165%" } : { width: "0px", backgroundColor: "transparent", border: "none" }}
             />

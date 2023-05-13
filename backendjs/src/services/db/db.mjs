@@ -5,9 +5,7 @@ import { create, useDB, getMaxOfN } from './dbUtil.mjs';
 import { insertOrUpdateChampion, getChampionByKey } from './repositories/ChampionRepository.mjs';
 import { getRotationForToday, insertOrUpdateRotation } from './repositories/RotationsRepository.mjs';
 import { getAbilityByChampionAndName } from './repositories/ChampionAbilitiesRepository.mjs';
-import { insertOrUpdateSkin } from './repositories/ChampSkinsRepository.mjs';
 import { insertOrUpdateAbility } from './repositories/ChampionAbilitiesRepository.mjs';
-import { insertOrUpdateSummoner } from './repositories/SummonerRepository.mjs';
 import config from '../../../env.json' assert { type: "json" };
 import { insertFetchTimeNow } from './repositories/BackendStatsRepository.mjs';
 
@@ -52,18 +50,21 @@ const db = {
 
     /**
      * Gathers the last "amount" amount of fetch times from the db
-     * @param {int} amount 
+     * @param {number} amount 
      * @returns 
      */
     getFetchTimes: async (amount) => {
         return new Promise((resolve, reject) => {
-            connection.query('SELECT * FROM fetch_times', (err, results) => {
+            const values = [];
+            let sql = `SELECT * FROM fetch_times ORDER BY timestamp DESC`;
+            if(amount){
+                values.push(amount);
+                sql = `SELECT * FROM fetch_times ORDER BY timestamp DESC LIMIT ?` 
+            }
+            connection.query(sql, values, (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
-                    if(amount){
-                        resolve(results.slice(-amount));
-                    }
                     resolve(results);
                 }
             });

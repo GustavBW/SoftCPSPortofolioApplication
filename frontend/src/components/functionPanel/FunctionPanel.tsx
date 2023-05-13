@@ -10,12 +10,13 @@ interface FunctionPanelProps {
     setFilterType: (filter: SearchFilter<Champion,any>) => void;
     setAnchorType: (type: AnchorTypes) => void;
     toggleInfoPanel: () => void;
+    setForceCenterField: (value: boolean) => void;
 }
 
 const path = "M 0 20 L 0 10 L 10 0 L 80 0 L 90 10 L 90 20 Z";
 const path2 = "M 21 20 L 23 18 L 68 18 L 70 20 Z";
 const path3 = "M 1 20 L 1 7 L 7 1 L 83 1 L 89 7 L 89 20 Z";
-export default function FunctionPanel({ setSearchTerm, setFilterType, setAnchorType, toggleInfoPanel }: FunctionPanelProps) {
+export default function FunctionPanel({ setSearchTerm, setFilterType, setAnchorType, toggleInfoPanel, setForceCenterField }: FunctionPanelProps) {
     //This is just the background, the rest is in the menu component
     return (
         <div className="FunctionPanel" onMouseEnter={e=> setAnchorType(AnchorTypes.Mouse)} 
@@ -46,6 +47,7 @@ export default function FunctionPanel({ setSearchTerm, setFilterType, setAnchorT
                 setFilterType={setFilterType} 
                 setAnchorType={setAnchorType}
                 toggleInfoPanel={toggleInfoPanel}
+                setForceCenterField={setForceCenterField}
                 />
         </div>
     );

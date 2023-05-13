@@ -13,14 +13,14 @@ import InfoPanel from './components/functionPanel/infoPanel/InfoPanel'
 function App() {
   const [center, setCenter] = useState({ x: 0, y: 0 }); // in pixels
   const [mouse, setMouse] = useState({ x: 0, y: 0 }); // in pixels
-  const [fieldRadius, setFieldRadius] = useState(0); // in pixels
   const [searchTerm, setSearchTerm] = useState("v"); // from function panel > menu into ChampField
   const [championFilter, setChampionFilter] = useState(championFilters[0]); //Champion attribute filter function
   const [anchorType, setAnchorType] = useState(AnchorTypes.Movement); //Champion attribute filter function
   const [selectedChampion, setSelectedChampion] = useState<Champion | null>(null); //Champion attribute filter function
   const [showSelectedChampion, setShowSelectedChampion] = useState(false); //Champion attribute filter function
   const [showInfoPanel, setShowInfoPanel] = useState(false); //website info panel
-
+  const [forceCenterField, setForceCenterField] = useState(false); //website info panel
+  const [showHealthPanel, setShowHealthPanel] = useState(false); //website info panel
 
   //Due to the heavy use of SVG elements, which does not scale as regular DOM elements, 
   //"center" is used to make sure the scaling is accurate.
@@ -37,7 +37,6 @@ function App() {
 
   const deselectChampion = () => {
     setShowSelectedChampion(false);
-
   }
 
   const selectChampion = (champion: Champion) => {
@@ -64,12 +63,15 @@ function App() {
       <HealthMonitor 
         setAnchorType={setAnchorType} 
         center={center}
+        showHealthPanel={showHealthPanel}
+        setShowHealthPanel={setShowHealthPanel}
       />
       <FunctionPanel 
         setSearchTerm={setSearchTerm} 
         setFilterType={setChampionFilter} 
         setAnchorType={setAnchorType}
         toggleInfoPanel={() => setShowInfoPanel(!showInfoPanel)}
+        setForceCenterField={setForceCenterField}
       />
       <MovementAnchor 
         center={center} 
@@ -83,6 +85,8 @@ function App() {
         filterOn={championFilter} 
         searchTerm={searchTerm} 
         setAnchorType={setAnchorType} 
+        forceCenterField={forceCenterField}
+        enableMovement={!(showSelectedChampion || showInfoPanel || showHealthPanel)}
       />
       <InfoPanel show={showInfoPanel} onDeselect={() => setShowInfoPanel(false)} setAnchorType={setAnchorType}/>
 

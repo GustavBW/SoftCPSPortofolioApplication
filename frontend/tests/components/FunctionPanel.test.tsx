@@ -6,16 +6,20 @@ import React from 'react';
 
 describe('FunctionPanel Component Test Suite', (test) => {
 
-    const result: RenderResult = render(
-        <FunctionPanel setSearchTerm={(term) => {}} setFilterType={(filter) => {}} setAnchorType={(type) => {}} toggleInfoPanel={() => {}}/>
-        );
+
 
     test('renders', () => {
+        const result: RenderResult = render(
+            <FunctionPanel setSearchTerm={(term) => { }} setFilterType={(filter) => { }} setAnchorType={(type) => { }} toggleInfoPanel={() => { }} />
+        );
         expect(result).toBeTruthy(); // check if FunctionPanel component renders
     });
 
     test('includes component Menu', () => {
-        const menu = screen.queryByTestId("function-menu");
+        const result: RenderResult = render(
+            <FunctionPanel setSearchTerm={(term) => { }} setFilterType={(filter) => { }} setAnchorType={(type) => { }} toggleInfoPanel={() => { }} />
+        );
+        const menu = result.queryByTestId("function-menu");
         expect(menu).toBeInTheDocument(); // check if SearchBar component renders
     });
 });

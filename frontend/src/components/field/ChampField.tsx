@@ -30,12 +30,14 @@ interface ChampFieldProps {
     searchTerm: string,
     setAnchorType: (type: AnchorTypes) => void,
     setSelectedChampion: (champion: Champion) => void
+    forceCenterField: boolean;
+    enableMovement: boolean;
 }
 
 const sqrt3 = Math.sqrt(3);
 const tileWidthPercent = .075; //percentage of the screen width
 
-export default function ChampField({ center, mouse, filterOn, searchTerm, setAnchorType, setSelectedChampion }: ChampFieldProps) {
+export default function ChampField({ center, mouse, filterOn, searchTerm, setAnchorType, setSelectedChampion, forceCenterField, enableMovement }: ChampFieldProps) {
     const [displayedChampions, setDisplayedChampions] = React.useState<Champion[]>([]);
     const [champions, setChampions] = React.useState<Champion[]>([]);
     const [fieldIndicies, setFieldIndicies] = React.useState<FieldIndex[]>([]);
@@ -65,7 +67,7 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
     useEffect(() => {
         const timeA = performance.now();
         getAllChampions().then(champs => {
-            console.log(`fetching champions took ${performance.now() - timeA} ms`);
+            //console.log(`fetching champions took ${performance.now() - timeA} ms`);
             updateChampionIndicies(champs);
             setDisplayedChampions(champs);
             setChampions(champs);
@@ -88,12 +90,12 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
             prepPropsAndApply(filterOn.reducer, filterOn.gatherReducerProps!).then((reducedChampions) => {
                 setDisplayedChampions(levenshteinSort(reducedChampions, filterOn, searchTerm.toLowerCase()));
                 const timeB = performance.now();
-                console.log(`sorting and reducing took ${timeB - timeA} ms`);
+                //console.log(`sorting and reducing took ${timeB - timeA} ms`);
             });
         }else{
             setDisplayedChampions(levenshteinSort(champsToSort, filterOn, searchTerm.toLowerCase()));
             const timeB = performance.now();
-            console.log(`sorting took ${timeB - timeA} ms`);
+            //console.log(`sorting took ${timeB - timeA} ms`);
         }
 
         //theres no excuse to bad search fields when levenshtein exists - and is very fast
@@ -128,6 +130,8 @@ export default function ChampField({ center, mouse, filterOn, searchTerm, setAnc
                         fieldIndex={fieldIndicies[index]} 
                         key={index} 
                         setAnchorType={setAnchorType} 
+                        forceCenter={forceCenterField}
+                        enableMovement={enableMovement}
                         />
                 )
             })}

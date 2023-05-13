@@ -57,8 +57,8 @@ export const initializeApi = (server) => {
     });
 
     server.get(apiRoot + '/cache/fetchtimes', async (req, res) => {
-        const amount = req.query.amount;
-        const fetchTimes = await db.getFetchTimes(amount);
+        let asNumber = Number(req.query.entries);
+        const fetchTimes = await db.getFetchTimes(asNumber);
         res.send(fetchTimes);
     });
 

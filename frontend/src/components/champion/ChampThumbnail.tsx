@@ -15,14 +15,17 @@ interface ThumbnailProps {
     width: number,
     setAnchorType: (type: AnchorTypes) => void,
     setSelectedChampion: (champion: Champion) => void
+    forceCenter: boolean;
+    enableMovement: boolean;
 }
 
 //const path = "M 4 0 L 0 3 L 0 11 L 4 14 L 8 11 L 8 3 Z";
 
-export default function ChampThumbnail({ champion, center, mouse, fieldIndex, width, setAnchorType, setSelectedChampion }: ThumbnailProps) {
+export default function ChampThumbnail({ champion, center, mouse, fieldIndex, width, setAnchorType, setSelectedChampion, forceCenter, enableMovement }: ThumbnailProps) {
     const [path, setPath] = React.useState<string>("M 4 0 L 0 3 L 0 11 L 4 14 L 8 11 L 8 3 Z");
     const height = width * 14.2 / 8;
     const [style, setStyle] = React.useState({
+        transition: "none", //prevents the thumbnail from moving on first render
         width: width + "px",
         height: height + "px",
         top: (fieldIndex.y + center.y) + "px",
@@ -30,21 +33,27 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
     });
     const [hover, setHover] = React.useState(false);
     const zIndex = ((champion.id / 1000) - 2) + ""; //solving z fighting issues
+    const [cachedMouse, setCachedMouse] = React.useState({x: 0, y: 0});
 
     const updatePositioning = () => {
-        /**
-        let cmVec = { x: center.x - mouse.x, y: center.y - mouse.y };
-        const cmDistSq = cmVec.x * cmVec.x + cmVec.y * cmVec.y;
+        let movementX = (center.x - cachedMouse.x) * (width / height);
+        let movementY = (center.y - cachedMouse.y) * (height / width);
 
-        if(cmDistSq < 100 * 100){
-            cmVec = { x: 0, y: 0 };
-        }
-        */
+        if (forceCenter) {
+            movementX = 0;
+            movementY = 0;
+        } 
+
+        if (enableMovement){
+            setCachedMouse({ ...mouse });
+        }   
+      
         setStyle({
+            transition: forceCenter ? "all .5s ease-in-out" : "none",
             width: width + "px",
             height: height + "px",
-            top: (fieldIndex.y + center.y) + "px",
-            left: (fieldIndex.x + center.x) + "px"
+            top: (fieldIndex.y + center.y + movementY) + "px",
+            left: (fieldIndex.x + center.x + movementX) + "px"
         });
     }
 
@@ -54,7 +63,7 @@ export default function ChampThumbnail({ champion, center, mouse, fieldIndex, wi
 
     return (
         <div className="ChampThumbnail" 
-            style={{ ...style, zIndex: zIndex + "", transitionDelay: (((1 - (1 / champion.champion_key)) * 5) + 1) + ""}} 
+            style={{ ...style, zIndex: zIndex + ""}} 
             onMouseOver={e => {setHover(true); setAnchorType(AnchorTypes.Grabber)}} 
             onMouseLeave={e => {setHover(false); setAnchorType(AnchorTypes.Movement)}}
             aria-label={champion.name}

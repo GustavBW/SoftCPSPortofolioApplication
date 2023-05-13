@@ -28,7 +28,6 @@ const getBaseValues = (rotation) => {
 export const insertRotation = async (connection, json) => {
     try {
         await connection.query(insertRotationQuery, getBaseValues(json));
-        console.log('Rotation added to the table.');
     } catch (err) {
         console.log('Error inserting rotation');
         console.log(err);

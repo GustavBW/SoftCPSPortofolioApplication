@@ -5,39 +5,45 @@ import App from '../../src/App';
 import React from 'react';
 
 describe('App Component Test Suite', (test) => {
-    const result: RenderResult = render(<App />);
 
     test('renders', () => {
+        const result: RenderResult = render(<App />);
         expect(result).toBeTruthy(); // check if App component renders
     });
 
     test('includes component FunctionPanel', () => {
-        const functionPanel = screen.queryByTestId("function-panel");
+        const result: RenderResult = render(<App />);
+        const functionPanel = result.queryByTestId("function-panel");
         expect(functionPanel).toBeInTheDocument(); // check if function panel renders
     });
 
-    test("includes component ChampionView", () => {
-        const championView = screen.queryByTestId("champion-view");
-        expect(championView).toBeInTheDocument();
+    test("does not initially include component ChampionView", () => {
+        const result: RenderResult = render(<App />);
+        const championView = result.queryByTestId("champion-view");
+        expect(championView).not.toBeInTheDocument();
     });
 
     test("includes component HealthMonitor", () => {
-        const healthMonitor = screen.queryByTestId("health-monitor");
+        const result: RenderResult = render(<App />);
+        const healthMonitor = result.queryByTestId("health-monitor");
         expect(healthMonitor).toBeInTheDocument();
     });
 
     test("includes component Champfield", () => {
-        const champField = screen.queryByTestId("champion-field");
+        const result: RenderResult = render(<App />);
+        const champField = result.queryByTestId("champion-field");
         expect(champField).toBeInTheDocument();
     });
 
     test("includes component InfoPanel", () => {
-        const infoPanel = screen.queryByTestId("info-panel");
+        const result: RenderResult = render(<App />);
+        const infoPanel = result.queryByTestId("info-panel");
         expect(infoPanel).toBeInTheDocument();
     });
 
     test("includes component MovementAnchor", () => {
-        const movementAnchor = screen.queryByTestId("movement-anchor");
+        const result: RenderResult = render(<App />);
+        const movementAnchor = result.queryByTestId("movement-anchor");
         expect(movementAnchor).toBeInTheDocument();
     });
 });

@@ -26,8 +26,8 @@ const getState = (): FieldIteratorState => {
     };
 }
 
-describe('Field Iterator Test Suite', () => {
-    it('should return unique, valid indexes for a given provided state', () => {
+describe('Field Iterator Test Suite', (test) => {
+    test('should return unique, valid indexes for a given provided state', () => {
         const state: FieldIteratorState = getState();
 
         const actual: FieldIndex[] = [];
@@ -52,11 +52,12 @@ describe('Field Iterator Test Suite', () => {
         }
     });
 
-    it('should remain completely stateless', () => {
+    test('should remain completely stateless', () => {
         const samples: FieldIndex[] = [];
 
         for (let i = 0; i < 20; i++) {
-            samples.push(iterateField(getState())); //copy the state
+            samples.push(iterateField(getState())); 
+            //if every iteration is made with the same external applied state, the resulting indicies should be the same
         }
 
         samples.map((index, i) => {
@@ -64,5 +65,15 @@ describe('Field Iterator Test Suite', () => {
                 expect(fieldIndexComparator(index, otherIndex)).toBe(0); //no difference
             });
         });
+    });
+
+    test('should be able to calculate 1m indicies in under a second regardless of hardware', () => {
+        const state: FieldIteratorState = getState();
+        const start = Date.now();
+        for (let i = 0; i < 1_000_000; i++) {
+            iterateField(state);
+        }
+        const end = Date.now();
+        expect(end - start).toBeLessThan(1000);
     });
 });

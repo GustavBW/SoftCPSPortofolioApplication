@@ -63,7 +63,7 @@ export async function getNewestRotation(): Promise<Rotation> {
 }
 
 export async function getLatestFetchTimeData(entries: number): Promise<FetchTimeData[]> {
-    try{
+
         const response = await fetch(`${serverUrl}${apiRoot}/cache/fetchtimes?entries=${entries}`, { headers: headers });
         const data = await response.json() as any[];
         const asOfTypeFetchTimeData: FetchTimeData[] = [];
@@ -75,9 +75,6 @@ export async function getLatestFetchTimeData(entries: number): Promise<FetchTime
             });
         });
         return asOfTypeFetchTimeData;
-    } catch (e) {
-        console.log(e);
-        return [];
-    }
+ 
 
 }

@@ -56,10 +56,18 @@ const getCurrent = (state: FieldIteratorState): FieldIndex => {
     };
 }
 
+/**
+ * Mutates the state according to pointer, layer and latest
+ * Then shifts the position based on the result and returns 
+ * a new FieldIndex object.
+ * @param state 
+ * @returns 
+ */
 const iterateField = (state: FieldIteratorState): FieldIndex => {
 
     if(state.latest == null) {
         //Accounting for tile mounting point at top left corner
+        //also the first index is special as it does not follow the same pattern as the rest
         state.latest = {x: 0 - (state.rawWidth / 2), y: 0 - (state.rawHeight / 2)};
         return { x: state.latest.x, y: state.latest.y, layer: state.layer, index: state.index };
     }
@@ -67,6 +75,7 @@ const iterateField = (state: FieldIteratorState): FieldIndex => {
     if (state.index % state.layer == 0){ //whenever we reach the end of a layer
         state.pointer++;
     }
+
     if (state.pointer > 5 || state.layer == 0){ //whenever we reach the end of a hexagon, reset pointer
         state.latest.x += state.width;          //also reset when the layer is 0 - X % 0 doesn't go so well
         state.layer++;
